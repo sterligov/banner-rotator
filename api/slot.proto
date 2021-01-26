@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package slot;
+option go_package = ".;pb";
+
+import "google/api/annotations.proto";
+
+message GetSlotByIDResponse {
+  int64 id = 1;
+  string description = 2;
+}
+
+message GetSlotByIDRequest {
+  int64 id = 1;
+  string description = 2;
+}
+
+message CreateSlotRequest {
+  int64  id = 1;
+  string description = 2;
+}
+
+message CreateSlotResponse {
+  int64 inserted_id = 1;
+}
+
+message DeleteSlotRequest {
+  int64 id = 1;
+}
+
+message DeleteSlotResponse {
+  int64 affected = 1;
+}
+
+message UpdateSlotRequest {
+  int64 id = 1;
+  int64 description = 2;
+}
+
+message UpdateSlotResponse {
+  int64 affected = 1;
+}
+
+service SlotService {
+  rpc GetSlotByID(GetSlotByIDRequest) returns (GetSlotByIDResponse) {
+    option(google.api.http) = {
+      get: "/slots/{id}"
+    };
+  };
+
+  rpc CreateSlot(CreateSlotRequest) returns (CreateSlotResponse) {
+    option(google.api.http) = {
+      post: "/slots"
+    };
+  };
+
+  rpc DeleteSlot(DeleteSlotRequest) returns (DeleteSlotResponse) {
+    option(google.api.http) = {
+      delete: "/slots/{id}"
+    };
+  };
+
+  rpc UpdateSlot(UpdateSlotRequest) returns (UpdateSlotResponse) {
+    option(google.api.http) = {
+      put: "/slots/{id}"
+    };
+  };
+}

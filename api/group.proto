@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package group;
+option go_package = ".;pb";
+
+import "google/api/annotations.proto";
+
+message GetGroupByIDResponse {
+  int64 id = 1;
+  string description = 2;
+}
+
+message GetGroupByIDRequest {
+  int64 id = 1;
+  string description = 2;
+}
+
+message CreateGroupRequest {
+  int64  id = 1;
+  string description = 2;
+}
+
+message CreateGroupResponse {
+  int64 inserted_id = 1;
+}
+
+message DeleteGroupRequest {
+  int64 id = 1;
+}
+
+message DeleteGroupResponse {
+  int64 affected = 1;
+}
+
+message UpdateGroupRequest {
+  int64 id = 1;
+  int64 description = 2;
+}
+
+message UpdateGroupResponse {
+  int64 affected = 1;
+}
+
+service GroupService {
+  rpc GetGroupByID(GetGroupByIDRequest) returns (GetGroupByIDResponse) {
+    option(google.api.http) = {
+      get: "/-groups/{id}"
+    };
+  };
+
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {
+    option(google.api.http) = {
+      post: "/-groups"
+    };
+  };
+
+  rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse) {
+    option(google.api.http) = {
+      delete: "/-groups/{id}"
+    };
+  };
+
+  rpc UpdateGroup(UpdateGroupRequest) returns (UpdateGroupResponse) {
+    option(google.api.http) = {
+      put: "/-groups/{id}"
+    };
+  };
+}

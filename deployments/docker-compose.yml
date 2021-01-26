@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  rotator-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - ${DB_PORT}:3306
+
+  rotator-front:
+    build:
+      context: ../frontend
+      dockerfile: ../build/front.Dockerfile
+    ports:
+      - 8008:80
+
+  rotator-api:
+    build:
+      context: ../
+      dockerfile: ./build/Dockerfile
+    ports:
+      - 8082:8082

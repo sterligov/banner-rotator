@@ -1,0 +1,16 @@
+logger:
+  level: info
+  path: stderr
+
+http:
+  addr: localhost:8081
+  write_timeout: 5s
+  read_timeout: 5s
+  handler_timeout: 5s
+
+grpc:
+  addr: localhost:8082
+
+database:
+  connection_addr: rotator_user:rotator_pass@tcp(localhost:3311)/rotator?parseTime=true
+  driver: mysql

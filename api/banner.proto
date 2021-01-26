@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package banner;
+option go_package = ".;pb";
+
+import "google/api/annotations.proto";
+
+message GetBannerByIDRequest {
+  int64 id = 1;
+}
+
+message GetBannerByIDResponse {
+  int64 id = 1;
+  string description = 2;
+}
+
+message CreateBannerRequest {
+  string description = 2;
+}
+
+message CreateBannerResponse {
+  int64 inserted_id = 1;
+}
+
+message DeleteBannerRequest {
+  int64 id = 1;
+}
+
+message DeleteBannerResponse {
+  int64 affected = 1;
+}
+
+message UpdateBannerRequest {
+  int64 id = 1;
+  int64 description = 2;
+}
+
+message UpdateBannerResponse {
+  int64 affected = 1;
+}
+
+message CreateBannerSlotRelationResponse {
+  int64 id = 1;
+}
+
+message CreateBannerSlotRelationRequest {
+  int64 banner_id = 1;
+  int64 slot_id = 2;
+}
+
+message DeleteBannerSlotRelationRequest {
+  int64 banner_id = 1;
+  int64 slot_id = 2;
+}
+
+message DeleteBannerSlotRelationResponse {
+  int64 affected = 1;
+}
+
+message RegisterClickRequest {
+  int64 banner_id = 1;
+  int64 slot_id = 2;
+  int64 social_group_id = 3;
+}
+
+message SelectBannerRequest {
+  int64 slot_id = 1;
+  int64 social_group_id = 2;
+}
+
+message SelectBannerResponse {
+  int64 banner_id = 1;
+}
+
+message RegisterClickResponse {}
+
+service BannerService {
+  rpc GetBannerByID(GetBannerByIDRequest) returns (GetBannerByIDResponse) {
+    option(google.api.http) = {
+      get: "/banners/{id}"
+    };
+  };
+
+  rpc CreateBanner(CreateBannerRequest) returns (CreateBannerResponse) {
+    option(google.api.http) = {
+      post: "/banners"
+    };
+  };
+
+  rpc DeleteBanner(DeleteBannerRequest) returns (DeleteBannerResponse) {
+    option(google.api.http) = {
+      delete: "/banners/{id}"
+    };
+  };
+
+  rpc UpdateBanner(UpdateBannerRequest) returns (UpdateBannerResponse) {
+    option(google.api.http) = {
+      put: "/banners/{id}"
+    };
+  };
+
+  rpc CreateBannerSlotRelation(CreateBannerSlotRelationRequest) returns (CreateBannerSlotRelationResponse) {
+    option(google.api.http) = {
+      put: "/banners/{banner_id}/slots/{slot_id}"
+    };
+  }
+
+  rpc DeleteBannerSlotRelation(DeleteBannerSlotRelationRequest) returns (DeleteBannerSlotRelationResponse) {
+    option(google.api.http) = {
+      delete: "/banners/{banner_id}/slots/{slot_id}"
+    };
+  }
+
+  rpc RegisterClick(RegisterClickRequest) returns (RegisterClickResponse) {
+    option(google.api.http) = {
+      post: "/banners/{banner_id}/slots/{slot_id}/click"
+    };
+  }
+
+  rpc SelectBanner(SelectBannerRequest) returns (SelectBannerResponse) {
+    option(google.api.http) = {
+      post: "/banners/select/social-group/{social_group_id}/slots/{slot_id}"
+    };
+  }
+}

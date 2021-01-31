@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package health;
+option go_package = ".;pb";
+
+import "google/api/annotations.proto";
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  enum HealthStatus {
+    NOT_ALIVE = 0;
+    ALIVE = 1;
+  }
+
+  HealthStatus status = 1;
+}
+
+service HealthService {
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse) {
+    option(google.api.http) = {
+      get: "/health"
+    };
+  };
+}

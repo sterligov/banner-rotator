@@ -32,8 +32,16 @@ type Config struct {
 		Level string `yaml:"level"`
 	} `yaml:"logger"`
 
+	Queue struct {
+		Subject string `yaml:"subject"`
+	} `yaml:"queue"`
+
 	Nats struct {
-		URL string `yaml:"url"`
+		URL                 string        `yaml:"url"`
+		MaxReconnectRetries int           `yaml:"max_reconnect_retries"`
+		ConnectTimeout      time.Duration `yaml:"connect_timeout"`
+		ConnectTimeWait     time.Duration `yaml:"connect_time_wait"`
+		ReconnectTime       time.Duration `yaml:"reconnect_time"`
 	} `yaml:"nats"`
 }
 

@@ -6,42 +6,63 @@ import (
 	"time"
 
 	"github.com/sterligov/banner-rotator/internal/model"
-
-	"github.com/sterligov/banner-rotator/internal/gateway/sql"
 )
 
 type (
-	Notifier interface {
-		Notify(ctx context.Context, e *model.Event) error
+	EventGateway interface {
+		Publish(e model.Event) error
 	}
 
 	Bandit interface {
 		Pull(ctx context.Context) error
 	}
 
+	BannerGateway interface {
+		FindByID(ctx context.Context, id int64) (model.Banner, error)
+		FindAll(ctx context.Context) ([]model.Banner, error)
+		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
+		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
+		Create(ctx context.Context, banner model.Banner) (int64, error)
+		DeleteByID(ctx context.Context, id int64) (int64, error)
+		Update(ctx context.Context, banner model.Banner) (int64, error)
+		IncrementShows(ctx context.Context, bannerID, slotID, groupID int64) error
+	}
+
 	UseCase struct {
-		bannerGateway sql.BannerGateway
-		notifier      Notifier
+		bannerGateway BannerGateway
+		eventGateway  EventGateway
 	}
 )
 
 func NewUseCase(
-	bannerGateway sql.BannerGateway,
-	notifier Notifier,
+	bannerGateway BannerGateway,
+	eventGateway EventGateway,
 ) *UseCase {
 	return &UseCase{
 		bannerGateway: bannerGateway,
-		notifier:      notifier,
+		eventGateway:  eventGateway,
 	}
 }
 
-func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, socialGroupID int64) error {
-	err := uc.notifier.Notify(ctx, &model.Event{
-		Type:          model.Click,
-		SlotID:        slotID,
-		BannerID:      bannerID,
-		SocialGroupID: socialGroupID,
-		Date:          time.Now(),
+func (uc *UseCase) CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
+	return uc.bannerGateway.CreateBannerSlotRelation(ctx, bannerID, slotID)
+}
+
+func (uc *UseCase) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
+	return uc.bannerGateway.DeleteBannerSlotRelation(ctx, bannerID, slotID)
+}
+
+func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, groupID int64) error {
+	if err := uc.bannerGateway.IncrementShows(ctx, bannerID, slotID, groupID); err != nil {
+		return fmt.Errorf("register click gateway: %w", err)
+	}
+
+	err := uc.eventGateway.Publish(model.Event{
+		Type:     model.EventClick,
+		SlotID:   slotID,
+		BannerID: bannerID,
+		GroupID:  groupID,
+		Date:     time.Now(),
 	})
 	if err != nil {
 		return fmt.Errorf("notify click banner: %w", err)
@@ -50,17 +71,39 @@ func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, socialGr
 	return nil
 }
 
-func (uc *UseCase) SelectBanner(ctx context.Context, slotID, socialGroupID int64) (int64, error) {
+func (uc *UseCase) SelectBanner(ctx context.Context, slotID, groupID int64) (int64, error) {
 	var bannerID int64
-	err := uc.notifier.Notify(ctx, &model.Event{
-		Type:          model.Select,
-		SlotID:        slotID,
-		BannerID:      bannerID,
-		SocialGroupID: socialGroupID,
-		Date:          time.Now(),
+
+	err := uc.eventGateway.Publish(model.Event{
+		Type:     model.EventSelect,
+		SlotID:   slotID,
+		BannerID: bannerID,
+		GroupID:  groupID,
+		Date:     time.Now(),
 	})
 	if err != nil {
 		return 0, fmt.Errorf("notify select banner: %w", err)
 	}
-	return 0, nil
+
+	return bannerID, nil
+}
+
+func (uc *UseCase) CreateBanner(ctx context.Context, banner model.Banner) (int64, error) {
+	return uc.bannerGateway.Create(ctx, banner)
+}
+
+func (uc *UseCase) UpdateBanner(ctx context.Context, banner model.Banner) (int64, error) {
+	return uc.bannerGateway.Create(ctx, banner)
+}
+
+func (uc *UseCase) DeleteBannerByID(ctx context.Context, id int64) (int64, error) {
+	return uc.bannerGateway.DeleteByID(ctx, id)
+}
+
+func (uc *UseCase) FindBannerByID(ctx context.Context, id int64) (model.Banner, error) {
+	return uc.bannerGateway.FindByID(ctx, id)
+}
+
+func (uc *UseCase) FindAllBanners(ctx context.Context) ([]model.Banner, error) {
+	return uc.bannerGateway.FindAll(ctx)
 }

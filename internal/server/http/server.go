@@ -4,7 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+
 	"github.com/sterligov/banner-rotator/internal/config"
 )
 
@@ -26,13 +27,13 @@ func NewServer(cfg *config.Config, h http.Handler) (*Server, error) {
 }
 
 func (s *Server) Start() error {
-	logrus.Infof("Start http server...")
+	zap.L().Info("Start http server...")
 
 	return s.httpServer.ListenAndServe()
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	logrus.Infof("Stop http server...")
+	zap.L().Info("Stop http server...")
 
 	return s.httpServer.Shutdown(ctx)
 }

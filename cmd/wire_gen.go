@@ -6,36 +6,50 @@
 package main
 
 import (
-	"github.com/sterligov/otus_highload/dating/internal/config"
-	"github.com/sterligov/otus_highload/dating/internal/gateway/sql"
-	"github.com/sterligov/otus_highload/dating/internal/server/http"
-	"github.com/sterligov/otus_highload/dating/internal/server/http/handler/v1"
-	"github.com/sterligov/otus_highload/dating/internal/server/http/middleware"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/auth"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/city"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/user"
+	"github.com/sterligov/banner-rotator/internal/config"
+	"github.com/sterligov/banner-rotator/internal/gateway/nats"
+	"github.com/sterligov/banner-rotator/internal/gateway/sql"
+	"github.com/sterligov/banner-rotator/internal/server"
+	"github.com/sterligov/banner-rotator/internal/server/grpc"
+	"github.com/sterligov/banner-rotator/internal/server/grpc/service"
+	"github.com/sterligov/banner-rotator/internal/server/http"
+	"github.com/sterligov/banner-rotator/internal/usecase/banner"
+	"github.com/sterligov/banner-rotator/internal/usecase/group"
+	"github.com/sterligov/banner-rotator/internal/usecase/slot"
 )
 
 // Injectors from wire.go:
 
-func setup(configConfig *config.Config) (*internalhttp.Server, func(), error) {
+func setup(configConfig *config.Config) (*server.Server, func(), error) {
 	db, err := sql.NewDatabase(configConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	userGateway := sql.NewUserGateway(db)
-	useCase := user.NewUserUseCase(userGateway)
-	userHandler := v1.NewUserHandler(useCase)
-	cityGateway := sql.NewCityGateway(db)
-	cityUseCase := city.NewCityUseCase(cityGateway)
-	cityHandler := v1.NewCityHandler(cityUseCase)
-	authUseCase := auth.NewAuthUseCase(userGateway)
-	ginJWTMiddleware := middleware.Auth(configConfig, authUseCase)
-	handler := v1.NewHandler(userHandler, cityHandler, ginJWTMiddleware)
-	server, err := internalhttp.NewServer(configConfig, handler)
+	bannerGateway := sql.NewBannerGateway(db)
+	natsNats, err := nats.NewNatsConnection(configConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	return server, func() {
+	eventGateway := nats.NewEventGateway(configConfig, natsNats)
+	useCase := banner.NewUseCase(bannerGateway, eventGateway)
+	bannerService := service.NewBannerService(useCase)
+	slotGateway := sql.NewSlotGateway(db)
+	slotUseCase := slot.NewUseCase(slotGateway)
+	slotService := service.NewSlotService(slotUseCase)
+	groupGateway := sql.NewGroupGateway(db)
+	groupUseCase := group.NewUseCase(groupGateway)
+	groupService := service.NewGroupService(groupUseCase)
+	healthService := service.NewHealthService(db)
+	grpcServer := grpc.NewServer(configConfig, bannerService, slotService, groupService, healthService)
+	handler, err := internalhttp.NewHandler(configConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+	internalhttpServer, err := internalhttp.NewServer(configConfig, handler)
+	if err != nil {
+		return nil, nil, err
+	}
+	serverServer := server.NewServer(grpcServer, internalhttpServer)
+	return serverServer, func() {
 	}, nil
 }

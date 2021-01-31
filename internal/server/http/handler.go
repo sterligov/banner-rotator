@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/sterligov/banner-rotator/internal/config"
 	"google.golang.org/grpc"
@@ -17,12 +19,28 @@ func NewHandler(cfg *config.Config) (http.Handler, error) {
 			UseProtoNames: true,
 		},
 	}
-
 	gw := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonPb))
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := pb.RegisterEventServiceHandlerFromEndpoint(context.Background(), gw, cfg.GRPC.Addr, opts)
+	ctx := context.Background()
+
+	err := pb.RegisterBannerServiceHandlerFromEndpoint(ctx, gw, cfg.GRPC.Addr, opts)
 	if err != nil {
-		return nil, fmt.Errorf("register event service handler endpoint failed: %w", err)
+		return nil, fmt.Errorf("register banner service handler endpoint: %w", err)
+	}
+
+	err = pb.RegisterGroupServiceHandlerFromEndpoint(ctx, gw, cfg.GRPC.Addr, opts)
+	if err != nil {
+		return nil, fmt.Errorf("register group service handler endpoint: %w", err)
+	}
+
+	err = pb.RegisterSlotServiceHandlerFromEndpoint(ctx, gw, cfg.GRPC.Addr, opts)
+	if err != nil {
+		return nil, fmt.Errorf("register slot service handler endpoint: %w", err)
+	}
+
+	err = pb.RegisterHealthServiceHandlerFromEndpoint(ctx, gw, cfg.GRPC.Addr, opts)
+	if err != nil {
+		return nil, fmt.Errorf("register health service handler endpoint: %w", err)
 	}
 
 	mux := http.NewServeMux()

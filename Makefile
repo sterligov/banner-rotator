@@ -49,6 +49,6 @@ migrations:
 	goose -dir migrations mysql "${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?parseTime=true" up
 
 generate:
-	go generate ./...
+	go generate ./internal/...
 
 .PHONY: migrations build run build-img run-img version test lint

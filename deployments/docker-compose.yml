@@ -15,16 +15,15 @@ services:
     ports:
       - ${DB_PORT}:3306
 
-  rotator-front:
-    build:
-      context: ../frontend
-      dockerfile: ../build/front.Dockerfile
-    ports:
-      - 8008:80
+#  rotator-api:
+#    build:
+#      context: ../
+#      dockerfile: ./build/Dockerfile
+#    ports:
+#      - 8082:8082
 
-  rotator-api:
-    build:
-      context: ../
-      dockerfile: ./build/Dockerfile
+  rotator-nats:
+    image: nats:2.1.9-alpine3.12
     ports:
-      - 8082:8082
+      - 8222:8222
+      - 4222:4222

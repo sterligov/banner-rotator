@@ -1,7 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5c51ee41-1e42-44da-b33f-34f14cebc45a" name="Default Changelist" comment="" />
+    <list default="true" id="5c51ee41-1e42-44da-b33f-34f14cebc45a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/banner.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/group.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/slot.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/wire.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/wire.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/wire_gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/wire_gen.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployments/.env" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployments/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/gateway/sql/banner.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/sql/banner.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/gateway/sql/group.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/sql/group.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/logger/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/logger/logger.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/queue/nats/nats.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/generate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/generate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/unary_interceptors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/unary_interceptors.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/http/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/http/middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/middleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/usecase/banner/banner.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/usecase/banner/banner.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/usecase/banner/banner_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/usecase/banner/banner_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/.idea/migrations.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210107220332_create_country_table.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210107220338_create_city_table.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210107220346_create_user_table.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210116152202_create_friends_table.sql" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,12 +67,25 @@
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../otus_homework/hw12_13_14_15_calendar" />
-    <property name="settings.editor.selected.configurable" value="go.vgo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/internal/usecase/slot" />
+    <property name="settings.editor.selected.configurable" value="database.main" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/usecase/slot" />
+      <recent name="$PROJECT_DIR$/internal/usecase/group" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/migrations" />
+      <recent name="$PROJECT_DIR$/internal/gateway" />
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/internal/usecase" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

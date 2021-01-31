@@ -5,17 +5,27 @@ option go_package = ".;pb";
 
 import "google/api/annotations.proto";
 
-message GetBannerByIDRequest {
+message Banner {
+  int64 id = 1;
+  string description = 2;
+}
+
+message FindBannerByIDRequest {
   int64 id = 1;
 }
 
-message GetBannerByIDResponse {
-  int64 id = 1;
-  string description = 2;
+message FindBannerByIDResponse {
+  Banner banner = 2;
 }
 
 message CreateBannerRequest {
   string description = 2;
+}
+
+message FindAllBannersRequest {}
+
+message FindAllBannersResponse {
+  repeated Banner banners = 1;
 }
 
 message CreateBannerResponse {
@@ -32,7 +42,7 @@ message DeleteBannerResponse {
 
 message UpdateBannerRequest {
   int64 id = 1;
-  int64 description = 2;
+  Banner banner = 2;
 }
 
 message UpdateBannerResponse {
@@ -60,12 +70,12 @@ message DeleteBannerSlotRelationResponse {
 message RegisterClickRequest {
   int64 banner_id = 1;
   int64 slot_id = 2;
-  int64 social_group_id = 3;
+  int64 group_id = 3;
 }
 
 message SelectBannerRequest {
   int64 slot_id = 1;
-  int64 social_group_id = 2;
+  int64 group_id = 2;
 }
 
 message SelectBannerResponse {
@@ -75,9 +85,15 @@ message SelectBannerResponse {
 message RegisterClickResponse {}
 
 service BannerService {
-  rpc GetBannerByID(GetBannerByIDRequest) returns (GetBannerByIDResponse) {
+  rpc FindBannerByID(FindBannerByIDRequest) returns (FindBannerByIDResponse) {
     option(google.api.http) = {
       get: "/banners/{id}"
+    };
+  };
+
+  rpc FindAllBanners(FindAllBannersRequest) returns (FindAllBannersResponse) {
+    option(google.api.http) = {
+      get: "/banners"
     };
   };
 
@@ -119,7 +135,7 @@ service BannerService {
 
   rpc SelectBanner(SelectBannerRequest) returns (SelectBannerResponse) {
     option(google.api.http) = {
-      post: "/banners/select/social-group/{social_group_id}/slots/{slot_id}"
+      post: "/banners/select/group/{group_id}/slots/{slot_id}"
     };
   }
 }

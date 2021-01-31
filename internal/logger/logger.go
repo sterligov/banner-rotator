@@ -3,14 +3,10 @@ package logger
 import (
 	"fmt"
 
-	"github.com/sterligov/otus_highload/dating/internal/config"
+	"github.com/sterligov/banner-rotator/internal/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
-
-type Logger struct {
-	logger *zap.Logger
-}
 
 var level = map[string]zapcore.Level{
 	"info":    zapcore.InfoLevel,
@@ -19,9 +15,11 @@ var level = map[string]zapcore.Level{
 	"debug":   zapcore.DebugLevel,
 }
 
+var ErrUnexpectedLogger = fmt.Errorf("unexpected logger level")
+
 func InitGlobal(cfg *config.Config) error {
 	if _, ok := level[cfg.Logger.Level]; !ok {
-		return fmt.Errorf("unexpected logger level %s", cfg.Logger.Level)
+		return fmt.Errorf("%s: %w", cfg.Logger.Level, ErrUnexpectedLogger)
 	}
 
 	lcfg := zap.Config{
@@ -41,7 +39,7 @@ func InitGlobal(cfg *config.Config) error {
 
 	zapLogger, err := lcfg.Build()
 	if err != nil {
-		return fmt.Errorf("build logger failed: %w", err)
+		return fmt.Errorf("build logger: %w", err)
 	}
 
 	zap.ReplaceGlobals(zapLogger)

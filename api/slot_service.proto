@@ -5,18 +5,26 @@ option go_package = ".;pb";
 
 import "google/api/annotations.proto";
 
-message GetSlotByIDResponse {
+message Slot {
   int64 id = 1;
   string description = 2;
 }
 
-message GetSlotByIDRequest {
+message FindSlotByIDResponse {
+  Slot slot = 1;
+}
+
+message FindSlotByIDRequest {
   int64 id = 1;
-  string description = 2;
+}
+
+message FindAllSlotsRequest {}
+
+message FindAllSlotsResponse {
+  repeated Slot slots = 1;
 }
 
 message CreateSlotRequest {
-  int64  id = 1;
   string description = 2;
 }
 
@@ -34,7 +42,7 @@ message DeleteSlotResponse {
 
 message UpdateSlotRequest {
   int64 id = 1;
-  int64 description = 2;
+  Slot slot = 2;
 }
 
 message UpdateSlotResponse {
@@ -42,9 +50,15 @@ message UpdateSlotResponse {
 }
 
 service SlotService {
-  rpc GetSlotByID(GetSlotByIDRequest) returns (GetSlotByIDResponse) {
+  rpc FindSlotByID(FindSlotByIDRequest) returns (FindSlotByIDResponse) {
     option(google.api.http) = {
       get: "/slots/{id}"
+    };
+  };
+
+  rpc FindAllSlots(FindAllSlotsRequest) returns (FindAllSlotsResponse) {
+    option(google.api.http) = {
+      get: "/slots"
     };
   };
 
@@ -62,7 +76,7 @@ service SlotService {
 
   rpc UpdateSlot(UpdateSlotRequest) returns (UpdateSlotResponse) {
     option(google.api.http) = {
-      put: "/slots/{id}"
+      put: "/-slots/{id}"
     };
   };
 }

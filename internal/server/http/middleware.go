@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type responseWriterDecorator struct {
@@ -36,7 +36,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(wd, r)
 		latency := fmt.Sprintf("%dms", time.Since(t).Milliseconds())
 
-		logrus.Infof(
+		log := fmt.Sprintf(
 			"%s %s %s %s %d %s %s",
 			r.RemoteAddr,
 			r.Method,
@@ -46,6 +46,8 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 			latency,
 			r.UserAgent(),
 		)
+
+		zap.L().Info(log)
 	})
 }
 

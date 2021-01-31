@@ -4,31 +4,51 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/sterligov/otus_highload/dating/internal/config"
-	"github.com/sterligov/otus_highload/dating/internal/domain"
-	"github.com/sterligov/otus_highload/dating/internal/gateway/sql"
-	internalhttp "github.com/sterligov/otus_highload/dating/internal/server/http"
-	v1 "github.com/sterligov/otus_highload/dating/internal/server/http/handler/v1"
-	"github.com/sterligov/otus_highload/dating/internal/server/http/middleware"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/auth"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/city"
-	"github.com/sterligov/otus_highload/dating/internal/usecase/user"
+	"github.com/jmoiron/sqlx"
+	"github.com/sterligov/banner-rotator/internal/config"
+	"github.com/sterligov/banner-rotator/internal/gateway/nats"
+	"github.com/sterligov/banner-rotator/internal/gateway/sql"
+	"github.com/sterligov/banner-rotator/internal/server"
+	internalgrpc "github.com/sterligov/banner-rotator/internal/server/grpc"
+	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
+	"github.com/sterligov/banner-rotator/internal/server/grpc/service"
+	internalhttp "github.com/sterligov/banner-rotator/internal/server/http"
+	"github.com/sterligov/banner-rotator/internal/usecase/banner"
+	"github.com/sterligov/banner-rotator/internal/usecase/group"
+	"github.com/sterligov/banner-rotator/internal/usecase/slot"
 )
 
-func setup(*config.Config) (*internalhttp.Server, func(), error) {
+func setup(*config.Config) (*server.Server, func(), error) {
 	panic(wire.Build(
-		wire.Bind(new(domain.UserGateway), new(*sql.UserGateway)),
-		wire.Bind(new(domain.CityGateway), new(*sql.CityGateway)),
+		wire.Bind(new(banner.EventGateway), new(*nats.EventGateway)),
+		wire.Bind(new(banner.BannerGateway), new(*sql.BannerGateway)),
+		wire.Bind(new(group.GroupGateway), new(*sql.GroupGateway)),
+		wire.Bind(new(slot.SlotGateway), new(*sql.SlotGateway)),
+		wire.Bind(new(service.BannerUseCase), new(*banner.UseCase)),
+		wire.Bind(new(service.SlotUseCase), new(*slot.UseCase)),
+		wire.Bind(new(service.GroupUseCase), new(*group.UseCase)),
+		wire.Bind(new(service.Pinger), new(*sqlx.DB)),
+		wire.Bind(new(pb.BannerServiceServer), new(*service.BannerService)),
+		wire.Bind(new(pb.GroupServiceServer), new(*service.GroupService)),
+		wire.Bind(new(pb.SlotServiceServer), new(*service.SlotService)),
+		wire.Bind(new(pb.HealthServiceServer), new(*service.HealthService)),
+
 		sql.NewDatabase,
-		sql.NewUserGateway,
-		sql.NewCityGateway,
-		user.NewUserUseCase,
-		auth.NewAuthUseCase,
-		city.NewCityUseCase,
-		v1.NewUserHandler,
-		v1.NewCityHandler,
-		middleware.Auth,
-		v1.NewHandler,
+		sql.NewBannerGateway,
+		sql.NewSlotGateway,
+		sql.NewGroupGateway,
+		nats.NewNatsConnection,
+		nats.NewEventGateway,
+		banner.NewUseCase,
+		group.NewUseCase,
+		slot.NewUseCase,
+		service.NewHealthService,
+		service.NewBannerService,
+		service.NewSlotService,
+		service.NewGroupService,
+		internalhttp.NewHandler,
 		internalhttp.NewServer,
+		internalgrpc.NewServer,
+		server.NewServer,
 	))
 }

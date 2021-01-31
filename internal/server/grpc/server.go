@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sirupsen/logrus"
 	"github.com/sterligov/banner-rotator/internal/config"
 	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -15,13 +15,22 @@ type Server struct {
 	addr       string
 }
 
-func NewServer(cfg *config.Config, eventServer pb.EventServiceServer) *Server {
+func NewServer(
+	cfg *config.Config,
+	bannerServer pb.BannerServiceServer,
+	slotServer pb.SlotServiceServer,
+	groupServer pb.GroupServiceServer,
+	healthServer pb.HealthServiceServer,
+) *Server {
 	chainInterceptor := grpc.ChainUnaryInterceptor(
-		LoggingInterceptor,
 		ErrorInterceptor,
+		LoggingInterceptor,
 	)
 	grpcServer := grpc.NewServer(chainInterceptor)
-	pb.RegisterEventServiceServer(grpcServer, eventServer)
+	pb.RegisterBannerServiceServer(grpcServer, bannerServer)
+	pb.RegisterSlotServiceServer(grpcServer, slotServer)
+	pb.RegisterGroupServiceServer(grpcServer, groupServer)
+	pb.RegisterHealthServiceServer(grpcServer, healthServer)
 
 	return &Server{
 		grpcServer: grpcServer,
@@ -35,13 +44,13 @@ func (s *Server) Start() error {
 		return fmt.Errorf("start grpc server failed: %w", err)
 	}
 
-	logrus.Infof("Start grpc server...")
+	zap.L().Info("Start grpc server...")
 
 	return s.grpcServer.Serve(listener)
 }
 
 func (s *Server) Stop() {
-	logrus.Infof("Stop grpc server...")
+	zap.L().Info("Stop grpc server...")
 
 	s.grpcServer.GracefulStop()
 }

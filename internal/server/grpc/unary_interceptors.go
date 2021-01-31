@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/peer"
@@ -23,9 +24,11 @@ func LoggingInterceptor(
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler,
 ) (resp interface{}, err error) {
+	logger := zap.L().Named("grpc logging interceptor")
+
 	p, ok := peer.FromContext(ctx)
 	if !ok {
-		logrus.Error(ErrPeerFromContext)
+		logger.Error("logging interceptor, peer from context failed", zap.Error(ErrPeerFromContext))
 
 		return resp, ErrPeerFromContext
 	}
@@ -34,13 +37,18 @@ func LoggingInterceptor(
 	resp, err = handler(ctx, req)
 	latency := fmt.Sprintf("%dms", time.Since(t).Milliseconds())
 
-	logrus.WithError(err).Infof(
+	if err != nil {
+		logger.Error("handler error", zap.Error(err), zap.String("method", info.FullMethod))
+	}
+
+	log := fmt.Sprintf(
 		"%s %s %s %s",
 		status.Code(err),
 		info.FullMethod,
 		p.Addr,
 		latency,
 	)
+	logger.Info(log)
 
 	return resp, err
 }

@@ -12,5 +12,15 @@ grpc:
   addr: localhost:8082
 
 database:
-  connection_addr: rotator_user:rotator_pass@tcp(localhost:3311)/rotator?parseTime=true
+  connection_addr: rotator_user:rotator_pass@tcp(localhost:3315)/rotator?parseTime=true
   driver: mysql
+
+nats:
+  url: nats://localhost:4222
+  connect_timeout: 10s
+  connect_time_wait: 1s
+  reconnect_time: 2s
+  max_reconnect_retries: 10
+
+queue:
+  subject: rotator

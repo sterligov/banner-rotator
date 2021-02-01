@@ -14,47 +14,58 @@ type (
 	}
 
 	Bandit interface {
-		Pull(ctx context.Context) error
+		SelectBanner(stats []model.Statistic) int64
+	}
+
+	StatisticGateway interface {
+		IncrementClicks(ctx context.Context, bannerID, slotID, groupID int64) error
+		IncrementShows(ctx context.Context, bannerID, slotID, groupID int64) error
+		FindStatistic(ctx context.Context, slotID, groupID int64) ([]model.Statistic, error)
 	}
 
 	BannerGateway interface {
 		FindByID(ctx context.Context, id int64) (model.Banner, error)
 		FindAll(ctx context.Context) ([]model.Banner, error)
-		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
-		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
+		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
+		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
 		Create(ctx context.Context, banner model.Banner) (int64, error)
 		DeleteByID(ctx context.Context, id int64) (int64, error)
 		Update(ctx context.Context, banner model.Banner) (int64, error)
-		IncrementShows(ctx context.Context, bannerID, slotID, groupID int64) error
 	}
 
 	UseCase struct {
-		bannerGateway BannerGateway
-		eventGateway  EventGateway
+		bannerGateway    BannerGateway
+		statisticGateway StatisticGateway
+		eventGateway     EventGateway
+		bandit           Bandit
 	}
 )
 
 func NewUseCase(
 	bannerGateway BannerGateway,
 	eventGateway EventGateway,
+	statisticGateway StatisticGateway,
+	bandit Bandit,
 ) *UseCase {
 	return &UseCase{
-		bannerGateway: bannerGateway,
-		eventGateway:  eventGateway,
+		bandit:           bandit,
+		bannerGateway:    bannerGateway,
+		eventGateway:     eventGateway,
+		statisticGateway: statisticGateway,
 	}
 }
 
-func (uc *UseCase) CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
+func (uc *UseCase) CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error) {
 	return uc.bannerGateway.CreateBannerSlotRelation(ctx, bannerID, slotID)
 }
 
-func (uc *UseCase) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
+func (uc *UseCase) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error) {
 	return uc.bannerGateway.DeleteBannerSlotRelation(ctx, bannerID, slotID)
 }
 
 func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, groupID int64) error {
-	if err := uc.bannerGateway.IncrementShows(ctx, bannerID, slotID, groupID); err != nil {
-		return fmt.Errorf("register click gateway: %w", err)
+	if err := uc.statisticGateway.IncrementClicks(ctx, bannerID, slotID, groupID); err != nil {
+		return fmt.Errorf("register click: %w", err)
 	}
 
 	err := uc.eventGateway.Publish(model.Event{
@@ -72,9 +83,19 @@ func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, groupID 
 }
 
 func (uc *UseCase) SelectBanner(ctx context.Context, slotID, groupID int64) (int64, error) {
-	var bannerID int64
+	stats, err := uc.statisticGateway.FindStatistic(ctx, slotID, groupID)
+	if err != nil {
+		return 0, fmt.Errorf("find statistic by slot: %w", err)
+	}
 
-	err := uc.eventGateway.Publish(model.Event{
+	bannerID := uc.bandit.SelectBanner(stats)
+
+	err = uc.statisticGateway.IncrementShows(ctx, bannerID, slotID, groupID)
+	if err != nil {
+		return 0, fmt.Errorf("increment shows: %w", err)
+	}
+
+	err = uc.eventGateway.Publish(model.Event{
 		Type:     model.EventSelect,
 		SlotID:   slotID,
 		BannerID: bannerID,

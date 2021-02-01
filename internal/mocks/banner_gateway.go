@@ -36,31 +36,45 @@ func (_m *BannerGateway) Create(ctx context.Context, _a1 model.Banner) (int64, e
 }
 
 // CreateBannerSlotRelation provides a mock function with given fields: ctx, bannerID, slotID
-func (_m *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID int64, slotID int64) error {
+func (_m *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID int64, slotID int64) (int64, error) {
 	ret := _m.Called(ctx, bannerID, slotID)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) error); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) int64); ok {
 		r0 = rf(ctx, bannerID, slotID)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int64)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int64, int64) error); ok {
+		r1 = rf(ctx, bannerID, slotID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // DeleteBannerSlotRelation provides a mock function with given fields: ctx, bannerID, slotID
-func (_m *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID int64, slotID int64) error {
+func (_m *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID int64, slotID int64) (int64, error) {
 	ret := _m.Called(ctx, bannerID, slotID)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) error); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(context.Context, int64, int64) int64); ok {
 		r0 = rf(ctx, bannerID, slotID)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(int64)
 	}
 
-	return r0
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int64, int64) error); ok {
+		r1 = rf(ctx, bannerID, slotID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // DeleteByID provides a mock function with given fields: ctx, id
@@ -126,20 +140,6 @@ func (_m *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, 
 	}
 
 	return r0, r1
-}
-
-// IncrementShows provides a mock function with given fields: ctx, bannerID, slotID, groupID
-func (_m *BannerGateway) IncrementShows(ctx context.Context, bannerID int64, slotID int64, groupID int64) error {
-	ret := _m.Called(ctx, bannerID, slotID, groupID)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64, int64, int64) error); ok {
-		r0 = rf(ctx, bannerID, slotID, groupID)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
 }
 
 // Update provides a mock function with given fields: ctx, _a1

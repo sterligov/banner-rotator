@@ -50,7 +50,7 @@ message UpdateBannerResponse {
 }
 
 message CreateBannerSlotRelationResponse {
-  int64 id = 1;
+  int64 inserted_id = 1;
 }
 
 message CreateBannerSlotRelationRequest {
@@ -117,7 +117,7 @@ service BannerService {
 
   rpc CreateBannerSlotRelation(CreateBannerSlotRelationRequest) returns (CreateBannerSlotRelationResponse) {
     option(google.api.http) = {
-      put: "/banners/{banner_id}/slots/{slot_id}"
+      post: "/banners/{banner_id}/slots/{slot_id}"
     };
   }
 
@@ -129,13 +129,13 @@ service BannerService {
 
   rpc RegisterClick(RegisterClickRequest) returns (RegisterClickResponse) {
     option(google.api.http) = {
-      post: "/banners/{banner_id}/slots/{slot_id}/click"
+      post: "/banners/{banner_id}/slots/{slot_id}/groups/{group_id}/click"
     };
   }
 
   rpc SelectBanner(SelectBannerRequest) returns (SelectBannerResponse) {
     option(google.api.http) = {
-      post: "/banners/select/group/{group_id}/slots/{slot_id}"
+      get: "/banners/select/group/{group_id}/slots/{slot_id}"
     };
   }
 }

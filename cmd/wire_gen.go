@@ -6,6 +6,7 @@
 package main
 
 import (
+	"github.com/sterligov/banner-rotator/internal/bandit/ucb"
 	"github.com/sterligov/banner-rotator/internal/config"
 	"github.com/sterligov/banner-rotator/internal/gateway/nats"
 	"github.com/sterligov/banner-rotator/internal/gateway/sql"
@@ -31,7 +32,9 @@ func setup(configConfig *config.Config) (*server.Server, func(), error) {
 		return nil, nil, err
 	}
 	eventGateway := nats.NewEventGateway(configConfig, natsNats)
-	useCase := banner.NewUseCase(bannerGateway, eventGateway)
+	statisticGateway := sql.NewStatisticGateway(db)
+	ucbUCB := ucb.New()
+	useCase := banner.NewUseCase(bannerGateway, eventGateway, statisticGateway, ucbUCB)
 	bannerService := service.NewBannerService(useCase)
 	slotGateway := sql.NewSlotGateway(db)
 	slotUseCase := slot.NewUseCase(slotGateway)

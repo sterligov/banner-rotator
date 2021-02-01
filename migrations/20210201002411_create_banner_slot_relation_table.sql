@@ -1,7 +1,7 @@
 -- +goose Up
 -- SQL in this section is executed when the migration is applied.
 CREATE TABLE IF NOT EXISTS banner_slot (
-  id INT(11) PRIMARY KEY,
+  id INT(11) PRIMARY KEY AUTO_INCREMENT,
   banner_id INT(11) NOT NULL,
   slot_id INT(11) NOT NULL,
   FOREIGN KEY (banner_id) REFERENCES banner(id) ON DELETE CASCADE,

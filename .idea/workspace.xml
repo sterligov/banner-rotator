@@ -5,42 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c51ee41-1e42-44da-b33f-34f14cebc45a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/banner.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/group.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/slot.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/banner_service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api/banner_service.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/wire.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/wire.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/wire_gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/wire_gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deployments/.env" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deployments/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/bandit/ucb/ucb.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/bandit/ucb/ucb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/gateway/sql/banner.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/sql/banner.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/gateway/sql/group.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/sql/group.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logger/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/logger/logger.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/mocks/banner_gateway.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/mocks/banner_gateway.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/mocks/banner_use_case.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/mocks/banner_use_case.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/model/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/models.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/queue/nats/nats.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/grpc/generate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/generate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/grpc/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/grpc/unary_interceptors.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/unary_interceptors.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/http/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/http/middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/middleware.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/server/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/http/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/pb/banner_service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/pb/banner_service.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/pb/banner_service.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/pb/banner_service.pb.gw.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/server/grpc/service/banner.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/server/grpc/service/banner.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/usecase/banner/banner.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/usecase/banner/banner.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/usecase/banner/banner_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/usecase/banner/banner_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/.idea/migrations.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/20210107220332_create_country_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/20210107220338_create_city_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/20210107220346_create_user_table.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/20210116152202_create_friends_table.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/usecase/banner/generate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/usecase/banner/generate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210130133119_create_banner_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/20210130133119_create_banner_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210130133126_create_group_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/20210130133126_create_social_group_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210130133128_create_slot_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/20210130133128_create_slot_table.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/20210201002411_create_banner_slot_relation_table.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/20210201002411_create_banner_slot_relation_table.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +43,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="ProjectId" id="1nT1qggnb7IE4LV9fw80QRCP0lU" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -65,6 +58,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -86,6 +80,71 @@
       <recent name="$PROJECT_DIR$/internal" />
       <recent name="$PROJECT_DIR$/internal/usecase" />
     </key>
+  </component>
+  <component name="RunManager" selected="Go Test.go test github.com/sterligov/banner-rotator/internal/usecase/banner">
+    <configuration name="TestRegisterClick in github.com/sterligov/banner-rotator/internal/usecase/banner" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="banner-rotator" />
+      <working_directory value="$PROJECT_DIR$/internal/usecase/banner" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestRegisterClick\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestRegisterClick/ok in github.com/sterligov/banner-rotator/internal/usecase/banner" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="banner-rotator" />
+      <working_directory value="$PROJECT_DIR$/internal/usecase/banner" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestRegisterClick\E$/^\Qok\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestSelectBanner/find_statistic_error in github.com/sterligov/banner-rotator/internal/usecase/banner" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="banner-rotator" />
+      <working_directory value="$PROJECT_DIR$/internal/usecase/banner" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestSelectBanner\E$/^\Qfind_statistic_error\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestSelectBanner/ok in github.com/sterligov/banner-rotator/internal/usecase/banner" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="banner-rotator" />
+      <working_directory value="$PROJECT_DIR$/internal/usecase/banner" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <pattern value="^\QTestSelectBanner\E$/^\Qok\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/sterligov/banner-rotator/internal/usecase/banner" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="banner-rotator" />
+      <working_directory value="$PROJECT_DIR$/internal/usecase/banner" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.go test github.com/sterligov/banner-rotator/internal/usecase/banner" />
+        <item itemvalue="Go Test.TestRegisterClick in github.com/sterligov/banner-rotator/internal/usecase/banner" />
+        <item itemvalue="Go Test.TestRegisterClick/ok in github.com/sterligov/banner-rotator/internal/usecase/banner" />
+        <item itemvalue="Go Test.TestSelectBanner/ok in github.com/sterligov/banner-rotator/internal/usecase/banner" />
+        <item itemvalue="Go Test.TestSelectBanner/find_statistic_error in github.com/sterligov/banner-rotator/internal/usecase/banner" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

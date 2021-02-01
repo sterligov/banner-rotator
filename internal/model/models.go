@@ -30,6 +30,14 @@ type (
 		Description string
 	}
 
+	Statistic struct {
+		BannerID int64
+		SlotID   int64
+		GroupID  int64
+		Clicks   int64
+		Shows    int64
+	}
+
 	Event struct {
 		Type     byte      `json:"type"`
 		SlotID   int64     `json:"slot_id"`

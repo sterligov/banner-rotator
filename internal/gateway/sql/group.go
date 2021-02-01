@@ -31,7 +31,7 @@ func NewGroupGateway(db *sqlx.DB) *GroupGateway {
 }
 
 func (gg *GroupGateway) FindByID(ctx context.Context, id int64) (model.Group, error) {
-	const query = `SELECT * FROM group WHERE id = ?`
+	const query = `SELECT * FROM social_group WHERE id = ?`
 
 	var g Group
 	err := gg.db.QueryRowxContext(ctx, query, id).StructScan(&g)
@@ -49,7 +49,7 @@ func (gg *GroupGateway) FindByID(ctx context.Context, id int64) (model.Group, er
 }
 
 func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
-	const query = `SELECT * FROM group`
+	const query = `SELECT * FROM social_group`
 
 	rows, err := gg.db.QueryxContext(ctx, query)
 	if err != nil {
@@ -80,7 +80,7 @@ func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
 }
 
 func (gg *GroupGateway) Create(ctx context.Context, g model.Group) (int64, error) {
-	const query = `INSERT INTO group(description) VALUES(?)`
+	const query = `INSERT INTO social_group(description) VALUES(?)`
 
 	res, err := gg.db.ExecContext(ctx, query, g.Description)
 	if err != nil {
@@ -96,7 +96,7 @@ func (gg *GroupGateway) Create(ctx context.Context, g model.Group) (int64, error
 }
 
 func (gg *GroupGateway) Update(ctx context.Context, g model.Group) (int64, error) {
-	const query = `UPDATE group SET description = ? WHERE id = ?`
+	const query = `UPDATE social_group SET description = ? WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, g.Description, g.ID)
 	if err != nil {
@@ -112,7 +112,7 @@ func (gg *GroupGateway) Update(ctx context.Context, g model.Group) (int64, error
 }
 
 func (gg *GroupGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
-	const query = `DELETE FROM group WHERE id = ?`
+	const query = `DELETE FROM social_group WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, id)
 	if err != nil {

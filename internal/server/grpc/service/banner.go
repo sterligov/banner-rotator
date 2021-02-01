@@ -13,8 +13,8 @@ import (
 type (
 	BannerUseCase interface {
 		RegisterClick(ctx context.Context, bannerID, slotID, groupID int64) error
-		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
-		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error
+		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
+		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
 		SelectBanner(ctx context.Context, slotID, groupID int64) (int64, error)
 		FindBannerByID(ctx context.Context, id int64) (model.Banner, error)
 		FindAllBanners(ctx context.Context) ([]model.Banner, error)
@@ -56,18 +56,18 @@ func (bs *BannerService) CreateBannerSlotRelation(
 	ctx context.Context,
 	r *pb.CreateBannerSlotRelationRequest,
 ) (*pb.CreateBannerSlotRelationResponse, error) {
-	err := bs.bannerUC.CreateBannerSlotRelation(ctx, r.BannerId, r.SlotId)
+	insertedID, err := bs.bannerUC.CreateBannerSlotRelation(ctx, r.BannerId, r.SlotId)
 
-	return &pb.CreateBannerSlotRelationResponse{}, err
+	return &pb.CreateBannerSlotRelationResponse{InsertedId: insertedID}, err
 }
 
 func (bs *BannerService) DeleteBannerSlotRelation(
 	ctx context.Context,
 	r *pb.DeleteBannerSlotRelationRequest,
 ) (*pb.DeleteBannerSlotRelationResponse, error) {
-	err := bs.bannerUC.DeleteBannerSlotRelation(ctx, r.BannerId, r.SlotId)
+	affected, err := bs.bannerUC.DeleteBannerSlotRelation(ctx, r.BannerId, r.SlotId)
 
-	return &pb.DeleteBannerSlotRelationResponse{}, err
+	return &pb.DeleteBannerSlotRelationResponse{Affected: affected}, err
 }
 
 func (bs *BannerService) FindBannerByID(ctx context.Context, r *pb.FindBannerByIDRequest) (*pb.FindBannerByIDResponse, error) {

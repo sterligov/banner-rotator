@@ -5,6 +5,7 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/jmoiron/sqlx"
+	"github.com/sterligov/banner-rotator/internal/bandit/ucb"
 	"github.com/sterligov/banner-rotator/internal/config"
 	"github.com/sterligov/banner-rotator/internal/gateway/nats"
 	"github.com/sterligov/banner-rotator/internal/gateway/sql"
@@ -22,6 +23,7 @@ func setup(*config.Config) (*server.Server, func(), error) {
 	panic(wire.Build(
 		wire.Bind(new(banner.EventGateway), new(*nats.EventGateway)),
 		wire.Bind(new(banner.BannerGateway), new(*sql.BannerGateway)),
+		wire.Bind(new(banner.StatisticGateway), new(*sql.StatisticGateway)),
 		wire.Bind(new(group.GroupGateway), new(*sql.GroupGateway)),
 		wire.Bind(new(slot.SlotGateway), new(*sql.SlotGateway)),
 		wire.Bind(new(service.BannerUseCase), new(*banner.UseCase)),
@@ -32,11 +34,14 @@ func setup(*config.Config) (*server.Server, func(), error) {
 		wire.Bind(new(pb.GroupServiceServer), new(*service.GroupService)),
 		wire.Bind(new(pb.SlotServiceServer), new(*service.SlotService)),
 		wire.Bind(new(pb.HealthServiceServer), new(*service.HealthService)),
+		wire.Bind(new(banner.Bandit), new(*ucb.UCB)),
 
+		ucb.New,
 		sql.NewDatabase,
 		sql.NewBannerGateway,
 		sql.NewSlotGateway,
 		sql.NewGroupGateway,
+		sql.NewStatisticGateway,
 		nats.NewNatsConnection,
 		nats.NewEventGateway,
 		banner.NewUseCase,

@@ -12,14 +12,14 @@ import (
 )
 
 type (
-	BannerGateway struct {
-		db     *sqlx.DB
-		logger *zap.Logger
-	}
-
 	Banner struct {
 		ID          int64
 		Description string
+	}
+
+	BannerGateway struct {
+		db     *sqlx.DB
+		logger *zap.Logger
 	}
 )
 
@@ -30,16 +30,36 @@ func NewBannerGateway(db *sqlx.DB) *BannerGateway {
 	}
 }
 
-func (bg *BannerGateway) IncrementShows(ctx context.Context, bannerID, slotID, groupID int64) error {
-	return nil
+func (bg *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error) {
+	const query = `INSERT INTO banner_slot(banner_id, slot_id) VALUES(?, ?)`
+
+	res, err := bg.db.ExecContext(ctx, query, bannerID, slotID)
+	if err != nil {
+		return 0, fmt.Errorf("create banner slot relation exec: %w", err)
+	}
+
+	insertedID, err := res.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("create banner slot relation, last inserted id: %w", err)
+	}
+
+	return insertedID, nil
 }
 
-func (bg *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
-	return nil
-}
+func (bg *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error) {
+	const query = `DELETE FROM banner_slot WHERE banner_id = ? AND slot_id = ?`
 
-func (bg *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) error {
-	return nil
+	res, err := bg.db.ExecContext(ctx, query, bannerID, slotID)
+	if err != nil {
+		return 0, fmt.Errorf("delete banner slot relation exec: %w", err)
+	}
+
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("delete banner slot relation, affected: %w", err)
+	}
+
+	return affected, nil
 }
 
 func (bg *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, error) {

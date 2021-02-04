@@ -72,7 +72,7 @@ func (gg *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
 		}
 		slots = append(slots, slot)
 	}
-	if rows.Err() != nil {
+	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("find all social slot rows: %w", err)
 	}
 

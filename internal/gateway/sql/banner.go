@@ -102,7 +102,7 @@ func (bg *BannerGateway) FindAll(ctx context.Context) ([]model.Banner, error) {
 		}
 		banners = append(banners, banner)
 	}
-	if rows.Err() != nil {
+	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("find all banner rows: %w", err)
 	}
 

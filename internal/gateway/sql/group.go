@@ -72,7 +72,7 @@ func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
 		}
 		groups = append(groups, group)
 	}
-	if rows.Err() != nil {
+	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("find all social group rows: %w", err)
 	}
 

@@ -113,7 +113,7 @@ WHERE bs.slot_id = ? AND (s.social_group_id = ? OR s.social_group_id IS NULL)`
 		}
 		stats = append(stats, s)
 	}
-	if rows.Err() != nil {
+	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("fetch statistic rows: %w", err)
 	}
 

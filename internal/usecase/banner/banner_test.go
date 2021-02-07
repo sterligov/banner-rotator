@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/sterligov/banner-rotator/internal/mocks"
 	"github.com/sterligov/banner-rotator/internal/model"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -143,7 +142,6 @@ func TestSelectBanner(t *testing.T) {
 			On("IncrementShows", mock.Anything, selectedBannerID, slotID, groupID).
 			Return(nil).
 			Once()
-		defer statisticGW.AssertExpectations(t)
 
 		bandit.On("SelectBanner", mock.MatchedBy(func(s []model.Statistic) bool {
 			return assert.ElementsMatch(t, stats, s)

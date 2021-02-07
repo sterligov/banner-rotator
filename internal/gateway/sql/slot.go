@@ -1,4 +1,4 @@
-package sql
+package sql //nolint:dupl
 
 import (
 	"context"
@@ -67,7 +67,7 @@ func (gg *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
 	)
 
 	for rows.Next() {
-		if err := rows.Scan(&slot); err != nil {
+		if err := rows.StructScan(&slot); err != nil {
 			return nil, fmt.Errorf("find all social slot rows scan: %w", err)
 		}
 		slots = append(slots, slot)
@@ -100,15 +100,15 @@ func (gg *SlotGateway) Update(ctx context.Context, s model.Slot) (int64, error) 
 
 	res, err := gg.db.ExecContext(ctx, query, s.Description, s.ID)
 	if err != nil {
-		return 0, fmt.Errorf("update social slot exec: %w", err)
+		return 0, fmt.Errorf("update slot exec: %w", err)
 	}
 
-	insertedID, err := res.LastInsertId()
+	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("social slot last insterted id: %w", err)
+		return 0, fmt.Errorf("slot affected: %w", err)
 	}
 
-	return insertedID, nil
+	return affected, nil
 }
 
 func (gg *SlotGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
@@ -116,12 +116,12 @@ func (gg *SlotGateway) DeleteByID(ctx context.Context, id int64) (int64, error) 
 
 	res, err := gg.db.ExecContext(ctx, query, id)
 	if err != nil {
-		return 0, fmt.Errorf("delete social slot exec: %w", err)
+		return 0, fmt.Errorf("delete slot exec: %w", err)
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("delete social slot affected: %w", err)
+		return 0, fmt.Errorf("delete slot affected: %w", err)
 	}
 
 	return affected, nil

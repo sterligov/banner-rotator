@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/sterligov/banner-rotator/internal/config"
+	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 )

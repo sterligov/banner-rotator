@@ -1,4 +1,4 @@
-package sql
+package sql //nolint:dupl
 
 import (
 	"context"
@@ -67,7 +67,7 @@ func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
 	)
 
 	for rows.Next() {
-		if err := rows.Scan(&group); err != nil {
+		if err := rows.StructScan(&group); err != nil {
 			return nil, fmt.Errorf("find all social group rows scan: %w", err)
 		}
 		groups = append(groups, group)
@@ -103,12 +103,12 @@ func (gg *GroupGateway) Update(ctx context.Context, g model.Group) (int64, error
 		return 0, fmt.Errorf("update social group exec: %w", err)
 	}
 
-	insertedID, err := res.LastInsertId()
+	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("social group last insterted id: %w", err)
+		return 0, fmt.Errorf("social group affected: %w", err)
 	}
 
-	return insertedID, nil
+	return affected, nil
 }
 
 func (gg *GroupGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {

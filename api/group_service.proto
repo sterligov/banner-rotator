@@ -25,7 +25,7 @@ message FindAllGroupsResponse {
 }
 
 message CreateGroupRequest {
-  string description = 2;
+  Group group = 1;
 }
 
 message CreateGroupResponse {

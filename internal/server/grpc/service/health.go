@@ -24,8 +24,7 @@ func NewHealthService(pinger Pinger) *HealthService {
 
 func (hs *HealthService) Check(ctx context.Context, _ *pb.HealthCheckRequest) (*pb.HealthCheckResponse, error) {
 	if err := hs.pinger.PingContext(ctx); err != nil {
-		return &pb.HealthCheckResponse{
-			Status: pb.HealthCheckResponse_NOT_ALIVE}, nil
+		return &pb.HealthCheckResponse{Status: pb.HealthCheckResponse_NOT_ALIVE}, nil
 	}
 
 	return &pb.HealthCheckResponse{Status: pb.HealthCheckResponse_ALIVE}, nil

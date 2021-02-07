@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"go.uber.org/zap"
-
 	"github.com/sterligov/banner-rotator/internal/config"
+	"go.uber.org/zap"
 )
 
 type Server struct {

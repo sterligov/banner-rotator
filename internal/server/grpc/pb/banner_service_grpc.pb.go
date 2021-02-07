@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 type BannerServiceClient interface {
 	FindBannerByID(ctx context.Context, in *FindBannerByIDRequest, opts ...grpc.CallOption) (*FindBannerByIDResponse, error)
 	FindAllBanners(ctx context.Context, in *FindAllBannersRequest, opts ...grpc.CallOption) (*FindAllBannersResponse, error)
+	FindAllBannersBySlotID(ctx context.Context, in *FindAllBannersBySlotIDRequest, opts ...grpc.CallOption) (*FindAllBannersBySlotIDResponse, error)
 	CreateBanner(ctx context.Context, in *CreateBannerRequest, opts ...grpc.CallOption) (*CreateBannerResponse, error)
 	DeleteBanner(ctx context.Context, in *DeleteBannerRequest, opts ...grpc.CallOption) (*DeleteBannerResponse, error)
 	UpdateBanner(ctx context.Context, in *UpdateBannerRequest, opts ...grpc.CallOption) (*UpdateBannerResponse, error)
@@ -48,6 +49,15 @@ func (c *bannerServiceClient) FindBannerByID(ctx context.Context, in *FindBanner
 func (c *bannerServiceClient) FindAllBanners(ctx context.Context, in *FindAllBannersRequest, opts ...grpc.CallOption) (*FindAllBannersResponse, error) {
 	out := new(FindAllBannersResponse)
 	err := c.cc.Invoke(ctx, "/banner.BannerService/FindAllBanners", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bannerServiceClient) FindAllBannersBySlotID(ctx context.Context, in *FindAllBannersBySlotIDRequest, opts ...grpc.CallOption) (*FindAllBannersBySlotIDResponse, error) {
+	out := new(FindAllBannersBySlotIDResponse)
+	err := c.cc.Invoke(ctx, "/banner.BannerService/FindAllBannersBySlotID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -123,6 +133,7 @@ func (c *bannerServiceClient) SelectBanner(ctx context.Context, in *SelectBanner
 type BannerServiceServer interface {
 	FindBannerByID(context.Context, *FindBannerByIDRequest) (*FindBannerByIDResponse, error)
 	FindAllBanners(context.Context, *FindAllBannersRequest) (*FindAllBannersResponse, error)
+	FindAllBannersBySlotID(context.Context, *FindAllBannersBySlotIDRequest) (*FindAllBannersBySlotIDResponse, error)
 	CreateBanner(context.Context, *CreateBannerRequest) (*CreateBannerResponse, error)
 	DeleteBanner(context.Context, *DeleteBannerRequest) (*DeleteBannerResponse, error)
 	UpdateBanner(context.Context, *UpdateBannerRequest) (*UpdateBannerResponse, error)
@@ -142,6 +153,9 @@ func (UnimplementedBannerServiceServer) FindBannerByID(context.Context, *FindBan
 }
 func (UnimplementedBannerServiceServer) FindAllBanners(context.Context, *FindAllBannersRequest) (*FindAllBannersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAllBanners not implemented")
+}
+func (UnimplementedBannerServiceServer) FindAllBannersBySlotID(context.Context, *FindAllBannersBySlotIDRequest) (*FindAllBannersBySlotIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAllBannersBySlotID not implemented")
 }
 func (UnimplementedBannerServiceServer) CreateBanner(context.Context, *CreateBannerRequest) (*CreateBannerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBanner not implemented")
@@ -209,6 +223,24 @@ func _BannerService_FindAllBanners_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BannerServiceServer).FindAllBanners(ctx, req.(*FindAllBannersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BannerService_FindAllBannersBySlotID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindAllBannersBySlotIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BannerServiceServer).FindAllBannersBySlotID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/banner.BannerService/FindAllBannersBySlotID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BannerServiceServer).FindAllBannersBySlotID(ctx, req.(*FindAllBannersBySlotIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -350,6 +382,10 @@ var _BannerService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindAllBanners",
 			Handler:    _BannerService_FindAllBanners_Handler,
+		},
+		{
+			MethodName: "FindAllBannersBySlotID",
+			Handler:    _BannerService_FindAllBannersBySlotID_Handler,
 		},
 		{
 			MethodName: "CreateBanner",

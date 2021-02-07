@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -23,8 +22,10 @@ type Config struct {
 	} `yaml:"grpc"`
 
 	Database struct {
-		Addr   string `yaml:"connection_addr"`
-		Driver string `yaml:"driver"`
+		Addr                string        `yaml:"connection_addr"`
+		Driver              string        `yaml:"driver"`
+		MaxReconnectRetries int           `yaml:"max_reconnect_retries"`
+		ReconnectTime       time.Duration `yaml:"reconnect_time"`
 	} `yaml:"database"`
 
 	Logger struct {
@@ -52,7 +53,7 @@ func New(cfgFilename string) (*Config, error) {
 	}
 	defer func() {
 		if err := f.Close(); err != nil {
-			zap.L().Warn("config file close: %s", zap.Error(err))
+			zap.L().Warn("config file close failed", zap.Error(err))
 		}
 	}()
 
@@ -60,7 +61,7 @@ func New(cfgFilename string) (*Config, error) {
 
 	decoder := yaml.NewDecoder(f)
 	if err := decoder.Decode(cfg); err != nil {
-		return nil, fmt.Errorf("decode config file failed: %w", err)
+		return nil, fmt.Errorf("decode config file: %w", err)
 	}
 
 	return cfg, err

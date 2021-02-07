@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	GroupGateway interface {
+	Gateway interface {
 		FindByID(ctx context.Context, id int64) (model.Group, error)
 		FindAll(ctx context.Context) ([]model.Group, error)
 		Create(ctx context.Context, group model.Group) (int64, error)
@@ -16,11 +16,11 @@ type (
 	}
 
 	UseCase struct {
-		groupGateway GroupGateway
+		groupGateway Gateway
 	}
 )
 
-func NewUseCase(groupGateway GroupGateway) *UseCase {
+func NewUseCase(groupGateway Gateway) *UseCase {
 	return &UseCase{groupGateway: groupGateway}
 }
 
@@ -29,7 +29,7 @@ func (uc *UseCase) CreateGroup(ctx context.Context, group model.Group) (int64, e
 }
 
 func (uc *UseCase) UpdateGroup(ctx context.Context, group model.Group) (int64, error) {
-	return uc.groupGateway.Create(ctx, group)
+	return uc.groupGateway.Update(ctx, group)
 }
 
 func (uc *UseCase) DeleteGroupByID(ctx context.Context, id int64) (int64, error) {

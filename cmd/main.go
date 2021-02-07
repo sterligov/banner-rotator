@@ -10,16 +10,15 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go.uber.org/zap"
-
 	"github.com/sterligov/banner-rotator/internal/config"
 	"github.com/sterligov/banner-rotator/internal/logger"
+	"go.uber.org/zap"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/calendar_config.yml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "/etc/rotator/config.yml", "Path to configuration file")
 }
 
 func main() {
@@ -57,13 +56,13 @@ func main() {
 
 	go func() {
 		if err := server.GRPC.Start(); err != nil {
-			zap.L().Warn("grpc server start failed: %s", zap.Error(err))
+			zap.L().Warn("grpc server start failed", zap.Error(err))
 		}
 	}()
 
 	go func() {
 		if err := server.HTTP.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			zap.L().Warn("http server start failed: %s", zap.Error(err))
+			zap.L().Warn("http server start failed", zap.Error(err))
 		}
 	}()
 
@@ -74,7 +73,7 @@ func main() {
 	signal.Stop(signals)
 
 	if err := server.HTTP.Stop(context.Background()); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		zap.L().Warn("http server stop failed: %s", zap.Error(err))
+		zap.L().Warn("http server stop failed", zap.Error(err))
 	}
 
 	server.GRPC.Stop()

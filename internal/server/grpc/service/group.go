@@ -1,4 +1,4 @@
-package service
+package service //nolint:dupl
 
 import (
 	"context"
@@ -54,7 +54,7 @@ func (bs *GroupService) FindAllGroups(ctx context.Context, _ *pb.FindAllGroupsRe
 
 func (bs *GroupService) CreateGroup(ctx context.Context, r *pb.CreateGroupRequest) (*pb.CreateGroupResponse, error) {
 	insertedID, err := bs.groupUC.CreateGroup(ctx, model.Group{
-		Description: r.Description,
+		Description: r.Group.Description,
 	})
 	if err != nil {
 		return nil, err

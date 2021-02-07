@@ -36,12 +36,12 @@ func (sg *StatisticGateway) IncrementShows(ctx context.Context, bannerID, slotID
 	query := `
 INSERT IGNORE INTO statistic(
 	banner_slot_id,
-    social_group_id,
-    clicks,
-    shows
+	social_group_id,
+	clicks,
+	shows
 ) VALUES(
-    (
-	    SELECT id
+	(
+		SELECT id
 		FROM banner_slot
 		WHERE banner_id = ? AND slot_id = ?
 	), ?, 0, 0
@@ -108,7 +108,7 @@ WHERE bs.slot_id = ? AND (s.social_group_id = ? OR s.social_group_id IS NULL)`
 	)
 
 	for rows.Next() {
-		if err := rows.Scan(&s); err != nil {
+		if err := rows.StructScan(&s); err != nil {
 			return nil, fmt.Errorf("fetch statistic rows scan: %w", err)
 		}
 		stats = append(stats, s)

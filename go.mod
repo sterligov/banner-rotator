@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-testfixtures/testfixtures/v3 v3.5.0
 	github.com/google/wire v0.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jmoiron/sqlx v1.2.0
@@ -14,6 +15,7 @@ require (
 	github.com/sterligov/otus_highload/dating v0.0.0-20210121154028-393e1f82aee2
 	github.com/stretchr/testify v1.6.1
 	go.uber.org/zap v1.16.0
+	golang.org/x/tools v0.0.0-20200825202427-b303f430e36d
 	google.golang.org/genproto v0.0.0-20201211151036-40ec1c210f7a
 	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0

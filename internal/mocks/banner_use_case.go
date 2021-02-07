@@ -121,6 +121,29 @@ func (_m *BannerUseCase) FindAllBanners(ctx context.Context) ([]model.Banner, er
 	return r0, r1
 }
 
+// FindAllBannersBySlotID provides a mock function with given fields: ctx, slotID
+func (_m *BannerUseCase) FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error) {
+	ret := _m.Called(ctx, slotID)
+
+	var r0 []model.Banner
+	if rf, ok := ret.Get(0).(func(context.Context, int64) []model.Banner); ok {
+		r0 = rf(ctx, slotID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Banner)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(ctx, slotID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindBannerByID provides a mock function with given fields: ctx, id
 func (_m *BannerUseCase) FindBannerByID(ctx context.Context, id int64) (model.Banner, error) {
 	ret := _m.Called(ctx, id)

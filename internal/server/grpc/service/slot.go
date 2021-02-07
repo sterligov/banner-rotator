@@ -1,4 +1,4 @@
-package service
+package service //nolint:dupl
 
 import (
 	"context"
@@ -54,7 +54,7 @@ func (bs *SlotService) FindAllSlots(ctx context.Context, _ *pb.FindAllSlotsReque
 
 func (bs *SlotService) CreateSlot(ctx context.Context, r *pb.CreateSlotRequest) (*pb.CreateSlotResponse, error) {
 	insertedID, err := bs.slotUC.CreateSlot(ctx, model.Slot{
-		Description: r.Description,
+		Description: r.Slot.Description,
 	})
 	if err != nil {
 		return nil, err

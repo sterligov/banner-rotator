@@ -18,6 +18,7 @@ type (
 		SelectBanner(ctx context.Context, slotID, groupID int64) (int64, error)
 		FindBannerByID(ctx context.Context, id int64) (model.Banner, error)
 		FindAllBanners(ctx context.Context) ([]model.Banner, error)
+		FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error)
 		CreateBanner(ctx context.Context, b model.Banner) (int64, error)
 		UpdateBanner(ctx context.Context, b model.Banner) (int64, error)
 		DeleteBannerByID(ctx context.Context, id int64) (int64, error)
@@ -92,9 +93,21 @@ func (bs *BannerService) FindAllBanners(ctx context.Context, _ *pb.FindAllBanner
 	return &pb.FindAllBannersResponse{Banners: toBanners(banners)}, nil
 }
 
+func (bs *BannerService) FindAllBannersBySlotID(
+	ctx context.Context,
+	r *pb.FindAllBannersBySlotIDRequest,
+) (*pb.FindAllBannersBySlotIDResponse, error) {
+	banners, err := bs.bannerUC.FindAllBannersBySlotID(ctx, r.SlotId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.FindAllBannersBySlotIDResponse{Banners: toBanners(banners)}, nil
+}
+
 func (bs *BannerService) CreateBanner(ctx context.Context, r *pb.CreateBannerRequest) (*pb.CreateBannerResponse, error) {
 	insertedID, err := bs.bannerUC.CreateBanner(ctx, model.Banner{
-		Description: r.Description,
+		Description: r.Banner.Description,
 	})
 	if err != nil {
 		return nil, err

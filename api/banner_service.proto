@@ -15,11 +15,19 @@ message FindBannerByIDRequest {
 }
 
 message FindBannerByIDResponse {
-  Banner banner = 2;
+  Banner banner = 1;
+}
+
+message FindAllBannersBySlotIDRequest {
+  int64 slot_id = 1;
+}
+
+message FindAllBannersBySlotIDResponse {
+  repeated Banner banners = 1;
 }
 
 message CreateBannerRequest {
-  string description = 2;
+  Banner banner = 1;
 }
 
 message FindAllBannersRequest {}
@@ -94,6 +102,12 @@ service BannerService {
   rpc FindAllBanners(FindAllBannersRequest) returns (FindAllBannersResponse) {
     option(google.api.http) = {
       get: "/banners"
+    };
+  };
+
+  rpc FindAllBannersBySlotID(FindAllBannersBySlotIDRequest) returns (FindAllBannersBySlotIDResponse) {
+    option(google.api.http) = {
+      get: "/slots/{slot_id}/banners"
     };
   };
 

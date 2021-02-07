@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	SlotGateway interface {
+	Gateway interface {
 		FindByID(ctx context.Context, id int64) (model.Slot, error)
 		FindAll(ctx context.Context) ([]model.Slot, error)
 		Create(ctx context.Context, slot model.Slot) (int64, error)
@@ -16,11 +16,11 @@ type (
 	}
 
 	UseCase struct {
-		slotGateway SlotGateway
+		slotGateway Gateway
 	}
 )
 
-func NewUseCase(slotGateway SlotGateway) *UseCase {
+func NewUseCase(slotGateway Gateway) *UseCase {
 	return &UseCase{slotGateway: slotGateway}
 }
 
@@ -29,7 +29,7 @@ func (uc *UseCase) CreateSlot(ctx context.Context, slot model.Slot) (int64, erro
 }
 
 func (uc *UseCase) UpdateSlot(ctx context.Context, slot model.Slot) (int64, error) {
-	return uc.slotGateway.Create(ctx, slot)
+	return uc.slotGateway.Update(ctx, slot)
 }
 
 func (uc *UseCase) DeleteSlotByID(ctx context.Context, id int64) (int64, error) {

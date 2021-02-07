@@ -19,7 +19,6 @@ type Nats struct {
 	ctx                 context.Context
 	connectTimeout      time.Duration
 	connectTimeWait     time.Duration
-	reconnectTime       time.Duration
 	maxReconnectRetries int
 }
 

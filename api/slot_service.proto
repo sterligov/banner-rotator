@@ -25,7 +25,7 @@ message FindAllSlotsResponse {
 }
 
 message CreateSlotRequest {
-  string description = 2;
+  Slot slot = 1;
 }
 
 message CreateSlotResponse {

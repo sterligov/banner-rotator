@@ -26,6 +26,7 @@ type (
 	BannerGateway interface {
 		FindByID(ctx context.Context, id int64) (model.Banner, error)
 		FindAll(ctx context.Context) ([]model.Banner, error)
+		FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error)
 		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
 		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
 		Create(ctx context.Context, banner model.Banner) (int64, error)
@@ -109,12 +110,16 @@ func (uc *UseCase) SelectBanner(ctx context.Context, slotID, groupID int64) (int
 	return bannerID, nil
 }
 
+func (uc *UseCase) FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error) {
+	return uc.bannerGateway.FindAllBannersBySlotID(ctx, slotID)
+}
+
 func (uc *UseCase) CreateBanner(ctx context.Context, banner model.Banner) (int64, error) {
 	return uc.bannerGateway.Create(ctx, banner)
 }
 
 func (uc *UseCase) UpdateBanner(ctx context.Context, banner model.Banner) (int64, error) {
-	return uc.bannerGateway.Create(ctx, banner)
+	return uc.bannerGateway.Update(ctx, banner)
 }
 
 func (uc *UseCase) DeleteBannerByID(ctx context.Context, id int64) (int64, error) {

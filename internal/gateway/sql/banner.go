@@ -13,8 +13,8 @@ import (
 
 type (
 	Banner struct {
-		ID          int64
-		Description string
+		ID          int64  `db:"id"`
+		Description string `db:"description"`
 	}
 
 	BannerGateway struct {
@@ -35,12 +35,12 @@ func (bg *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID,
 
 	res, err := bg.db.ExecContext(ctx, query, bannerID, slotID)
 	if err != nil {
-		return 0, fmt.Errorf("create banner slot relation exec: %w", err)
+		return 0, fmt.Errorf("exec(CreateBannerSlotRelation): %w", err)
 	}
 
 	insertedID, err := res.LastInsertId()
 	if err != nil {
-		return 0, fmt.Errorf("create banner slot relation, last inserted id: %w", err)
+		return 0, fmt.Errorf("last inserted id(CreateBannerSlotRelation): %w", err)
 	}
 
 	return insertedID, nil
@@ -51,12 +51,12 @@ func (bg *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID,
 
 	res, err := bg.db.ExecContext(ctx, query, bannerID, slotID)
 	if err != nil {
-		return 0, fmt.Errorf("delete banner slot relation exec: %w", err)
+		return 0, fmt.Errorf("exec(DeleteBannerSlotRelation): %w", err)
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("delete banner slot relation, affected: %w", err)
+		return 0, fmt.Errorf("affected(DeleteBannerSlotRelation): %w", err)
 	}
 
 	return affected, nil
@@ -72,7 +72,7 @@ func (bg *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, 
 			return toBanner(b), fmt.Errorf("banner: %w", model.ErrNotFound)
 		}
 
-		return toBanner(b), fmt.Errorf("select banner: %w", err)
+		return toBanner(b), fmt.Errorf("query(FindByID banner): %w", err)
 	}
 
 	return toBanner(b), nil
@@ -83,7 +83,7 @@ func (bg *BannerGateway) FindAll(ctx context.Context) ([]model.Banner, error) {
 
 	rows, err := bg.db.QueryxContext(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("banner find all: %w", err)
+		return nil, fmt.Errorf("query(FindAll banners): %w", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -97,13 +97,48 @@ func (bg *BannerGateway) FindAll(ctx context.Context) ([]model.Banner, error) {
 	)
 
 	for rows.Next() {
-		if err := rows.Scan(&banner); err != nil {
-			return nil, fmt.Errorf("find all banner rows scan: %w", err)
+		if err := rows.StructScan(&banner); err != nil {
+			return nil, fmt.Errorf("rows scan(FindAll banners): %w", err)
 		}
 		banners = append(banners, banner)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("find all banner rows: %w", err)
+		return nil, fmt.Errorf("rows error(FindAll banners): %w", err)
+	}
+
+	return toBanners(banners), nil
+}
+
+func (bg *BannerGateway) FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error) {
+	const query = `
+SELECT b.*
+FROM banner b
+JOIN banner_slot bs ON bs.banner_id = b.id
+WHERE bs.slot_id = ?`
+
+	rows, err := bg.db.QueryxContext(ctx, query, slotID)
+	if err != nil {
+		return nil, fmt.Errorf("query(FindAllBannersBySlotID): %w", err)
+	}
+	defer func() {
+		if err := rows.Close(); err != nil {
+			bg.logger.Warn("close rows failed", zap.Error(err))
+		}
+	}()
+
+	var (
+		banners []Banner
+		banner  Banner
+	)
+
+	for rows.Next() {
+		if err := rows.StructScan(&banner); err != nil {
+			return nil, fmt.Errorf("cannot scan rows(FindAllBannersBySlotID): %w", err)
+		}
+		banners = append(banners, banner)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error(FindAllBannersBySlotID): %w", err)
 	}
 
 	return toBanners(banners), nil
@@ -114,12 +149,12 @@ func (bg *BannerGateway) Create(ctx context.Context, b model.Banner) (int64, err
 
 	res, err := bg.db.ExecContext(ctx, query, b.Description)
 	if err != nil {
-		return 0, fmt.Errorf("create banner exec: %w", err)
+		return 0, fmt.Errorf("exec(Create banner): %w", err)
 	}
 
 	insertedID, err := res.LastInsertId()
 	if err != nil {
-		return 0, fmt.Errorf("banner last insterted id: %w", err)
+		return 0, fmt.Errorf("last insterted id(Create banner): %w", err)
 	}
 
 	return insertedID, nil
@@ -130,12 +165,12 @@ func (bg *BannerGateway) Update(ctx context.Context, b model.Banner) (int64, err
 
 	res, err := bg.db.ExecContext(ctx, query, b.Description, b.ID)
 	if err != nil {
-		return 0, fmt.Errorf("update banner exec: %w", err)
+		return 0, fmt.Errorf("exec(Update banner): %w", err)
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("update banner affected: %w", err)
+		return 0, fmt.Errorf("affected(Update banner): %w", err)
 	}
 
 	return affected, nil
@@ -146,12 +181,12 @@ func (bg *BannerGateway) DeleteByID(ctx context.Context, id int64) (int64, error
 
 	res, err := bg.db.ExecContext(ctx, query, id)
 	if err != nil {
-		return 0, fmt.Errorf("delete banner exec: %w", err)
+		return 0, fmt.Errorf("exec(Delete banner): %w", err)
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
-		return 0, fmt.Errorf("delete banner affected: %w", err)
+		return 0, fmt.Errorf("affected(Delete banner): %w", err)
 	}
 
 	return affected, nil

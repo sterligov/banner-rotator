@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	internalsql "github.com/sterligov/banner-rotator/internal/gateway/sql"
-
 	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
 )
 

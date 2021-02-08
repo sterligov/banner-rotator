@@ -27,6 +27,9 @@ version: build
 test:
 	go test -race ./internal/...
 
+long-test:
+	go test -race -count=100 ./internal/...
+
 integration-test:
 	chmod +x ./scripts/integration_test.sh && ./scripts/integration_test.sh
 
@@ -42,7 +45,7 @@ wire:
 mocks:
 	mockery --all --dir internal --output ./internal/mocks --case underscore
 
-docker-up:
+docker-run:
 	cd deployments && docker-compose up -d --build
 
 docker-stop:

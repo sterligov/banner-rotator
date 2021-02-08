@@ -3,9 +3,13 @@ package integration
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
+	"time"
 
+	"github.com/nats-io/nats.go"
 	internalsql "github.com/sterligov/banner-rotator/internal/gateway/sql"
+	"github.com/sterligov/banner-rotator/internal/model"
 	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
 )
 
@@ -29,7 +33,6 @@ func (s *Suite) TestBannerService() {
 		}
 
 		// проверяем, что каждый баннер был показан хотя бы один раз
-		// также проверяем, что не были показаны баннеры не привязанные к данному слоту
 		for i := 0; i < len(slot.Banners); i++ {
 			resp, err := bannerService.SelectBanner(ctx, &pb.SelectBannerRequest{
 				GroupId: groupID,
@@ -42,7 +45,7 @@ func (s *Suite) TestBannerService() {
 		}
 		s.Require().Equal(0, len(banners), "каждый баннер должен быть показан хотя бы один раз")
 
-		// кликаем на каждый баннер по 10 раз
+		// кликаем на каждый баннер по несколько раз
 		nDefaultShows := 10
 		for _, b := range slot.Banners {
 			for i := 0; i < nDefaultShows; i++ {
@@ -82,6 +85,62 @@ func (s *Suite) TestBannerService() {
 			s.Require().NotEqual(nDefaultShows, banners[slot.Banners[i].Id], "остальные баннеры тоже должны выбираться")
 			s.Require().True(mostShows >= 4*banners[slot.Banners[i].Id], "кол-во показов самого кликабельного баннера должно быть минимум в 4 раза больше")
 		}
+	})
+
+	s.Run("click banner queue event", func() {
+		var (
+			bannerID int64 = 3
+			slotID   int64 = 1
+			groupID  int64 = 1
+		)
+
+		_, err := s.natsConn.Subscribe("rotator", func(msg *nats.Msg) {
+			event := new(model.Event)
+			err := json.Unmarshal(msg.Data, event)
+			s.Require().NoError(err)
+
+			s.Require().True(event.Date.After(time.Now().Add(-time.Minute)))
+			s.Require().True(event.Date.Before(time.Now().Add(time.Minute)))
+			s.Require().Equal(bannerID, event.BannerID)
+			s.Require().Equal(slotID, event.SlotID)
+			s.Require().Equal(groupID, event.GroupID)
+			s.Require().Equal(byte(model.EventClick), event.Type)
+		})
+		s.Require().NoError(err)
+
+		_, err = bannerService.RegisterClick(context.Background(), &pb.RegisterClickRequest{
+			BannerId: bannerID,
+			SlotId:   slotID,
+			GroupId:  groupID,
+		})
+		s.Require().NoError(err)
+	})
+
+	s.Run("select banner queue event", func() {
+		var (
+			slotID  int64 = 1
+			groupID int64 = 1
+		)
+
+		_, err := s.natsConn.Subscribe("rotator", func(msg *nats.Msg) {
+			event := new(model.Event)
+			err := json.Unmarshal(msg.Data, event)
+			s.Require().NoError(err)
+
+			s.Require().True(event.Date.After(time.Now().Add(-time.Minute)))
+			s.Require().True(event.Date.Before(time.Now().Add(time.Minute)))
+			s.Require().NotEmpty(event.BannerID)
+			s.Require().Equal(slotID, event.SlotID)
+			s.Require().Equal(groupID, event.GroupID)
+			s.Require().Equal(byte(model.EventSelect), event.Type)
+		})
+		s.Require().NoError(err)
+
+		_, err = bannerService.SelectBanner(context.Background(), &pb.SelectBannerRequest{
+			SlotId:  slotID,
+			GroupId: groupID,
+		})
+		s.Require().NoError(err)
 	})
 
 	s.Run("create banner slot relation", func() {

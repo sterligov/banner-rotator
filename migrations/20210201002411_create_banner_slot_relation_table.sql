@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS banner_slot (
   id INT(11) PRIMARY KEY AUTO_INCREMENT,
   banner_id INT(11) NOT NULL,
   slot_id INT(11) NOT NULL,
+  UNIQUE(banner_id, slot_id),
   FOREIGN KEY (banner_id) REFERENCES banner(id) ON DELETE CASCADE,
   FOREIGN KEY (slot_id) REFERENCES slot(id) ON DELETE CASCADE
 );

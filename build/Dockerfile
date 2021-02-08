@@ -10,12 +10,11 @@ COPY go.sum .
 RUN go mod download
 
 COPY . ${CODE_DIR}
-RUN rm cmd/wire.go
 
 ARG LDFLAGS
-RUN CGO_ENABLED=0 go build \
+RUN cd cmd && CGO_ENABLED=0 go build \
         -ldflags "$LDFLAGS" \
-        -o ${BIN_FILE} cmd/*
+        -o ${BIN_FILE} .
 
 FROM alpine:3.9
 

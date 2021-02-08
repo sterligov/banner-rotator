@@ -1,4 +1,10 @@
 version: "3"
 
 services:
-  rotator-integrational:
+  rotator_integration:
+    build:
+      context: ../
+      dockerfile: ./build/integration-tests.Dockerfile
+#    command: ["rotator_db:3306", "-t", "60", "--", "go", "test", "-v", "./tests/integration/..."]
+    depends_on:
+      - rotator_migrations

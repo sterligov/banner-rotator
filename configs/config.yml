@@ -14,8 +14,8 @@ grpc:
 database:
   connection_addr: rotator_user:rotator_pass@tcp(rotator_db:3306)/rotator?parseTime=true
   driver: mysql
-  reconnect_time: 2s
-  max_reconnect_retries: 5
+  reconnect_time: 3s
+  max_reconnect_retries: 20
 
 nats:
   url: nats://rotator_nats:4222

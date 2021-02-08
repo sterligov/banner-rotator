@@ -10,9 +10,7 @@ const (
 	EventSelect
 )
 
-var (
-	ErrNotFound = fmt.Errorf("entity not found")
-)
+var ErrNotFound = fmt.Errorf("entity not found")
 
 type (
 	Banner struct {

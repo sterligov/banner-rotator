@@ -1,7 +1,10 @@
 package integration
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/nats-io/nats.go"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-testfixtures/testfixtures/v3"
@@ -15,6 +18,7 @@ type Suite struct {
 
 	db       *sqlx.DB
 	grpcConn *grpc.ClientConn
+	natsConn *nats.Conn
 }
 
 func TestIntegration(t *testing.T) {
@@ -22,25 +26,10 @@ func TestIntegration(t *testing.T) {
 }
 
 func (s *Suite) SetupSuite() {
-	//dbName := os.Getenv("DB_NAME")
-	//dbUser := os.Getenv("DB_USER")
-	//dbPass := os.Getenv("DB_PASSWORD")
-	//dbHost := os.Getenv("DB_HOST")
-	//dbPort := os.Getenv("DB_PORT")
-	//grpcConn := os.Getenv("GRPC_SERVER")
-
 	conn, err := grpc.Dial("localhost:8880", grpc.WithInsecure())
 	s.Require().NoError(err)
 	s.grpcConn = conn
 
-	//addr := fmt.Sprintf(
-	//	"%s:%s@tcp(%s:%s)/%s?parseTime=true",
-	//	dbUser,
-	//	dbPass,
-	//	dbHost,
-	//	dbPort,
-	//	dbName,
-	//)
 	addr := "rotator_user:rotator_pass@tcp(localhost:3315)/rotator?parseTime=true"
 	db, err := sqlx.Connect("mysql", addr)
 	s.Require().NoError(err)
@@ -55,11 +44,20 @@ func (s *Suite) SetupSuite() {
 
 	err = fixtures.Load()
 	s.Require().NoError(err)
-
 	s.db = db
+
+	s.natsConn, err = nats.Connect("nats://localhost:4222")
+	s.Require().NoError(err)
 }
 
 func (s *Suite) TearDownSuite() {
-	_, err := s.db.Exec("DELETE FROM statistic")
-	s.Require().NoError(err)
+	tables := []string{"statistic", "banner", "slot", "social_group", "banner_slot"}
+	for _, t := range tables {
+		_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s", t))
+		s.Require().NoError(err)
+	}
+
+	s.Require().NoError(s.db.Close())
+	s.Require().NoError(s.grpcConn.Close())
+	s.natsConn.Close()
 }

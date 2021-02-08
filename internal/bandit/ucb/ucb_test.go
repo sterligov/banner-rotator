@@ -21,8 +21,8 @@ func TestSelectBanner(t *testing.T) {
 			{
 				BannerID: expectedBannerID,
 				SlotID:   1,
-				GroupID:  1,
-				Clicks:   1,
+				GroupID:  0,
+				Clicks:   0,
 				Shows:    0,
 			},
 		}

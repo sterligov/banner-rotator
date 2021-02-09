@@ -24,11 +24,6 @@ jobs:
       script: go test -race -count=100 ./...
 
     - stage: "Tests"
-      name: "Integration tests"
-      install: go mod download
-      script: ./scripts/integration-test.sh
-
-    - stage: "Tests"
       name: "Build"
       install: go mod download
       script: go build -o rotator ./cmd

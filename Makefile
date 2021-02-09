@@ -9,8 +9,11 @@ LDFLAGS := -X main.release="develop" -X main.buildDate=$(shell date -u +%Y-%m-%d
 build:
 	go build -v -o $(BIN) -ldflags "$(LDFLAGS)" ./cmd
 
-run: build
-	$(BIN) -config ./configs/config.yml
+run:
+	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml up -d --build --remove-orphans
+
+down:
+	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml down
 
 build-img:
 	docker build \
@@ -44,12 +47,6 @@ wire:
 
 mocks:
 	mockery --all --dir internal --output ./internal/mocks --case underscore
-
-docker-run:
-	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml up -d --build --remove-orphans
-
-docker-down:
-	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml down
 
 migrations:
 	goose -dir migrations mysql "${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?parseTime=true" up

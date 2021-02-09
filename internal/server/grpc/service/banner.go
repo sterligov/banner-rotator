@@ -58,8 +58,11 @@ func (bs *BannerService) CreateBannerSlotRelation(
 	r *pb.CreateBannerSlotRelationRequest,
 ) (*pb.CreateBannerSlotRelationResponse, error) {
 	insertedID, err := bs.bannerUC.CreateBannerSlotRelation(ctx, r.BannerId, r.SlotId)
+	if err != nil {
+		return nil, err
+	}
 
-	return &pb.CreateBannerSlotRelationResponse{InsertedId: insertedID}, err
+	return &pb.CreateBannerSlotRelationResponse{InsertedId: insertedID}, nil
 }
 
 func (bs *BannerService) DeleteBannerSlotRelation(
@@ -67,8 +70,11 @@ func (bs *BannerService) DeleteBannerSlotRelation(
 	r *pb.DeleteBannerSlotRelationRequest,
 ) (*pb.DeleteBannerSlotRelationResponse, error) {
 	affected, err := bs.bannerUC.DeleteBannerSlotRelation(ctx, r.BannerId, r.SlotId)
+	if err != nil {
+		return nil, err
+	}
 
-	return &pb.DeleteBannerSlotRelationResponse{Affected: affected}, err
+	return &pb.DeleteBannerSlotRelationResponse{Affected: affected}, nil
 }
 
 func (bs *BannerService) FindBannerByID(ctx context.Context, r *pb.FindBannerByIDRequest) (*pb.FindBannerByIDResponse, error) {

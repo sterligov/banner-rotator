@@ -1,4 +1,7 @@
-package integration //nolint:dupl
+//+build integration
+
+//nolint:dupl
+package integration
 
 import (
 	"context"
@@ -8,6 +11,42 @@ import (
 	internalsql "github.com/sterligov/banner-rotator/internal/gateway/sql"
 	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
 )
+
+func (s *Suite) TestFindAllSlots() {
+	slotService := pb.NewSlotServiceClient(s.grpcConn)
+
+	resp, err := slotService.FindAllSlots(context.Background(), &pb.FindAllSlotsRequest{})
+	s.Require().NoError(err)
+
+	rows, err := s.db.Queryx("SELECT * FROM slot")
+	s.Require().NoError(err)
+	defer func() {
+		s.Require().NoError(rows.Close())
+	}()
+
+	m := make(map[int64]*pb.Slot, len(resp.Slots))
+	for _, b := range resp.Slots {
+		m[b.Id] = b
+	}
+
+	var (
+		slot   internalsql.Slot
+		nSlots = len(resp.Slots)
+	)
+
+	for rows.Next() {
+		err = rows.StructScan(&slot)
+		s.Require().NoError(err)
+		s.Require().Contains(m, slot.ID)
+		s.Require().Equal(m[slot.ID].Id, slot.ID)
+		s.Require().Equal(m[slot.ID].Description, slot.Description)
+		delete(m, slot.ID)
+		nSlots--
+	}
+
+	s.Require().Empty(nSlots)
+	s.Require().NoError(rows.Err())
+}
 
 func (s *Suite) TestFindSlotByID() {
 	slotService := pb.NewSlotServiceClient(s.grpcConn)

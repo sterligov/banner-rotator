@@ -1,4 +1,7 @@
-package integration //nolint:dupl
+//+build integration
+
+//nolint:dupl
+package integration
 
 import (
 	"context"
@@ -8,6 +11,42 @@ import (
 	internalsql "github.com/sterligov/banner-rotator/internal/gateway/sql"
 	"github.com/sterligov/banner-rotator/internal/server/grpc/pb"
 )
+
+func (s *Suite) TestFindAllGroups() {
+	groupService := pb.NewGroupServiceClient(s.grpcConn)
+
+	resp, err := groupService.FindAllGroups(context.Background(), &pb.FindAllGroupsRequest{})
+	s.Require().NoError(err)
+
+	rows, err := s.db.Queryx("SELECT * FROM social_group")
+	s.Require().NoError(err)
+	defer func() {
+		s.Require().NoError(rows.Close())
+	}()
+
+	m := make(map[int64]*pb.Group, len(resp.Groups))
+	for _, b := range resp.Groups {
+		m[b.Id] = b
+	}
+
+	var (
+		group   internalsql.Group
+		nGroups = len(resp.Groups)
+	)
+
+	for rows.Next() {
+		err = rows.StructScan(&group)
+		s.Require().NoError(err)
+		s.Require().Contains(m, group.ID)
+		s.Require().Equal(m[group.ID].Id, group.ID)
+		s.Require().Equal(m[group.ID].Description, group.Description)
+		delete(m, group.ID)
+		nGroups--
+	}
+
+	s.Require().Empty(nGroups)
+	s.Require().NoError(rows.Err())
+}
 
 func (s *Suite) TestFindGroupByID() {
 	groupService := pb.NewGroupServiceClient(s.grpcConn)

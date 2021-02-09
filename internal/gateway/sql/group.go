@@ -1,4 +1,5 @@
-package sql //nolint:dupl
+//nolint:dupl
+package sql
 
 import (
 	"context"

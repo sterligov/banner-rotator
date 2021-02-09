@@ -14,7 +14,7 @@ linters:
     - depguard
     - dogsled
     - dupl
-#    - errorlint
+    - errorlint
     - exportloopref
     - funlen
     - gci
@@ -46,7 +46,7 @@ linters:
     - staticcheck
     - structcheck
     - stylecheck
-#    - tparallel
+    - tparallel
     - typecheck
     - unconvert
     - unparam

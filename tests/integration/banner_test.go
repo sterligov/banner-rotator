@@ -1,3 +1,6 @@
+//+build integration
+
+//nolint:dupl
 package integration
 
 import (
@@ -183,6 +186,87 @@ func (s *Suite) TestDeleteBannerSlotRelation() {
 		QueryRow("SELECT id FROM banner_slot WHERE slot_id = ? AND banner_id = ?", slotID, bannerID).
 		Scan(&id)
 	s.Require().True(errors.Is(err, sql.ErrNoRows))
+}
+
+func (s *Suite) TestFindAllBanners() {
+	bannerService := pb.NewBannerServiceClient(s.grpcConn)
+
+	resp, err := bannerService.FindAllBanners(context.Background(), &pb.FindAllBannersRequest{})
+	s.Require().NoError(err)
+
+	rows, err := s.db.Queryx("SELECT * FROM banner")
+	s.Require().NoError(err)
+	defer func() {
+		s.Require().NoError(rows.Close())
+	}()
+
+	m := make(map[int64]*pb.Banner, len(resp.Banners))
+	for _, b := range resp.Banners {
+		m[b.Id] = b
+	}
+
+	var (
+		banner   internalsql.Banner
+		nBanners = len(resp.Banners)
+	)
+
+	for rows.Next() {
+		err = rows.StructScan(&banner)
+		s.Require().NoError(err)
+		s.Require().Contains(m, banner.ID)
+		s.Require().Equal(m[banner.ID].Id, banner.ID)
+		s.Require().Equal(m[banner.ID].Description, banner.Description)
+		delete(m, banner.ID)
+		nBanners--
+	}
+
+	s.Require().Empty(nBanners)
+	s.Require().NoError(rows.Err())
+}
+
+func (s *Suite) TestFindAllBannersBySlotID() {
+	bannerService := pb.NewBannerServiceClient(s.grpcConn)
+
+	var slotID int64 = 2
+	resp, err := bannerService.FindAllBannersBySlotID(context.Background(), &pb.FindAllBannersBySlotIDRequest{
+		SlotId: slotID,
+	})
+	s.Require().NoError(err)
+
+	const query = `
+SELECT b.*
+FROM banner b
+JOIN banner_slot bs ON bs.banner_id = b.id
+WHERE bs.slot_id = ?`
+
+	rows, err := s.db.Queryx(query, slotID)
+	s.Require().NoError(err)
+	defer func() {
+		s.Require().NoError(rows.Close())
+	}()
+
+	m := make(map[int64]*pb.Banner, len(resp.Banners))
+	for _, b := range resp.Banners {
+		m[b.Id] = b
+	}
+
+	var (
+		banner   internalsql.Banner
+		nBanners = len(resp.Banners)
+	)
+
+	for rows.Next() {
+		err = rows.StructScan(&banner)
+		s.Require().NoError(err)
+		s.Require().Contains(m, banner.ID)
+		s.Require().Equal(m[banner.ID].Id, banner.ID)
+		s.Require().Equal(m[banner.ID].Description, banner.Description)
+		delete(m, banner.ID)
+		nBanners--
+	}
+
+	s.Require().Empty(nBanners)
+	s.Require().NoError(rows.Err())
 }
 
 func (s *Suite) TestFindBannerByID() {

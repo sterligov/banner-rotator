@@ -1,4 +1,5 @@
-package service //nolint:dupl
+//nolint:dupl
+package service
 
 import (
 	"context"

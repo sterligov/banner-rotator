@@ -383,7 +383,7 @@ func TestFindAllBanners(t *testing.T) {
 
 			ctx := context.Background()
 			bannerGw.
-				On("FindAll", ctx).
+				On("FindAllBanners", ctx).
 				Return(tst.banners, tst.err).
 				Once()
 			defer bannerGw.AssertExpectations(t)
@@ -414,7 +414,7 @@ func TestFindBannerByID(t *testing.T) {
 			var bannerID int64 = 1
 			ctx := context.Background()
 			bannerGw.
-				On("FindByID", ctx, bannerID).
+				On("FindBannerByID", ctx, bannerID).
 				Return(tst.banner, tst.err).
 				Once()
 			defer bannerGw.AssertExpectations(t)
@@ -448,7 +448,7 @@ func TestCreateBanner(t *testing.T) {
 
 			ctx := context.Background()
 			bannerGw.
-				On("Create", ctx, banner).
+				On("CreateBanner", ctx, banner).
 				Return(tst.insertedID, tst.err).
 				Once()
 			defer bannerGw.AssertExpectations(t)
@@ -482,7 +482,7 @@ func TestUpdateBanner(t *testing.T) {
 
 			ctx := context.Background()
 			bannerGw.
-				On("Update", ctx, banner).
+				On("UpdateBanner", ctx, banner).
 				Return(tst.affected, tst.err).
 				Once()
 			defer bannerGw.AssertExpectations(t)
@@ -514,7 +514,7 @@ func TestDeleteBannerByID(t *testing.T) {
 
 			ctx := context.Background()
 			bannerGw.
-				On("DeleteByID", ctx, bannerID).
+				On("DeleteBannerByID", ctx, bannerID).
 				Return(tst.affected, tst.err).
 				Once()
 			defer bannerGw.AssertExpectations(t)

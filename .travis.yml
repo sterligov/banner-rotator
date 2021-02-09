@@ -1,9 +1,10 @@
-os: linux
-
 language: go
 
 go:
-  - 1.15.x
+  - "1.15"
+
+os:
+  - linux
 
 env: GO111MODULE=on
 
@@ -20,9 +21,9 @@ jobs:
     - stage: "Tests"
       name: "Unit tests"
       install: go mod download
-      script: go test -v -count=100 -race ./...
+      script: go test -race -count=100 ./...
 
     - stage: "Tests"
       name: "Build"
       install: go mod download
-      script: cd cmd && go build
+      script: go build -o rotator ./cmd

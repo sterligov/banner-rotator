@@ -27,7 +27,7 @@ func TestFindAllGroups(t *testing.T) {
 
 			ctx := context.Background()
 			groupGw.
-				On("FindAll", ctx).
+				On("FindAllGroups", ctx).
 				Return(tst.groups, tst.err).
 				Once()
 			defer groupGw.AssertExpectations(t)
@@ -58,7 +58,7 @@ func TestFindGroupByID(t *testing.T) {
 			var groupID int64 = 1
 			ctx := context.Background()
 			groupGw.
-				On("FindByID", ctx, groupID).
+				On("FindGroupByID", ctx, groupID).
 				Return(tst.group, tst.err).
 				Once()
 			defer groupGw.AssertExpectations(t)
@@ -92,7 +92,7 @@ func TestCreateGroup(t *testing.T) {
 
 			ctx := context.Background()
 			groupGw.
-				On("Create", ctx, group).
+				On("CreateGroup", ctx, group).
 				Return(tst.insertedID, tst.err).
 				Once()
 			defer groupGw.AssertExpectations(t)
@@ -126,7 +126,7 @@ func TestUpdateGroup(t *testing.T) {
 
 			ctx := context.Background()
 			groupGw.
-				On("Update", ctx, group).
+				On("UpdateGroup", ctx, group).
 				Return(tst.affected, tst.err).
 				Once()
 			defer groupGw.AssertExpectations(t)
@@ -158,7 +158,7 @@ func TestDeleteGroupByID(t *testing.T) {
 
 			ctx := context.Background()
 			groupGw.
-				On("DeleteByID", ctx, groupID).
+				On("DeleteGroupByID", ctx, groupID).
 				Return(tst.affected, tst.err).
 				Once()
 			defer groupGw.AssertExpectations(t)

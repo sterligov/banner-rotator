@@ -1,2 +1,2 @@
-//go:generate mockery --name Gateway --dir ./ --output ./../../mocks --case underscore
+//go:generate mockery --name GroupGateway --dir ./ --output ./../../mocks --case underscore
 package group

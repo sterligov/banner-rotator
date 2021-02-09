@@ -31,25 +31,23 @@ func NewSlotGateway(db *sqlx.DB) *SlotGateway {
 	}
 }
 
-func (gg *SlotGateway) FindByID(ctx context.Context, id int64) (model.Slot, error) {
+func (gg *SlotGateway) FindSlotByID(ctx context.Context, id int64) (model.Slot, error) {
 	const query = `SELECT * FROM slot WHERE id = ?`
 
 	var g Slot
 	err := gg.db.QueryRowxContext(ctx, query, id).StructScan(&g)
 	if err != nil {
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				return toSlot(g), fmt.Errorf("social slot: %w", model.ErrNotFound)
-			}
-
-			return toSlot(g), fmt.Errorf("select social slot: %w", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return toSlot(g), fmt.Errorf("social slot: %w", model.ErrNotFound)
 		}
+
+		return toSlot(g), fmt.Errorf("select social slot: %w", err)
 	}
 
 	return toSlot(g), nil
 }
 
-func (gg *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
+func (gg *SlotGateway) FindAllSlots(ctx context.Context) ([]model.Slot, error) {
 	const query = `SELECT * FROM slot`
 
 	rows, err := gg.db.QueryxContext(ctx, query)
@@ -80,7 +78,7 @@ func (gg *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
 	return toSlots(slots), nil
 }
 
-func (gg *SlotGateway) Create(ctx context.Context, s model.Slot) (int64, error) {
+func (gg *SlotGateway) CreateSlot(ctx context.Context, s model.Slot) (int64, error) {
 	const query = `INSERT INTO slot(description) VALUES(?)`
 
 	res, err := gg.db.ExecContext(ctx, query, s.Description)
@@ -96,7 +94,7 @@ func (gg *SlotGateway) Create(ctx context.Context, s model.Slot) (int64, error) 
 	return insertedID, nil
 }
 
-func (gg *SlotGateway) Update(ctx context.Context, s model.Slot) (int64, error) {
+func (gg *SlotGateway) UpdateSlot(ctx context.Context, s model.Slot) (int64, error) {
 	const query = `UPDATE slot SET description = ? WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, s.Description, s.ID)
@@ -112,7 +110,7 @@ func (gg *SlotGateway) Update(ctx context.Context, s model.Slot) (int64, error) 
 	return affected, nil
 }
 
-func (gg *SlotGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
+func (gg *SlotGateway) DeleteSlotByID(ctx context.Context, id int64) (int64, error) {
 	const query = `DELETE FROM slot WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, id)

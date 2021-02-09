@@ -62,7 +62,7 @@ func (bg *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID,
 	return affected, nil
 }
 
-func (bg *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, error) {
+func (bg *BannerGateway) FindBannerByID(ctx context.Context, id int64) (model.Banner, error) {
 	const query = `SELECT * FROM banner WHERE id = ?`
 
 	var b Banner
@@ -78,7 +78,7 @@ func (bg *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, 
 	return toBanner(b), nil
 }
 
-func (bg *BannerGateway) FindAll(ctx context.Context) ([]model.Banner, error) {
+func (bg *BannerGateway) FindAllBanners(ctx context.Context) ([]model.Banner, error) {
 	const query = `SELECT * FROM banner`
 
 	rows, err := bg.db.QueryxContext(ctx, query)
@@ -144,7 +144,7 @@ WHERE bs.slot_id = ?`
 	return toBanners(banners), nil
 }
 
-func (bg *BannerGateway) Create(ctx context.Context, b model.Banner) (int64, error) {
+func (bg *BannerGateway) CreateBanner(ctx context.Context, b model.Banner) (int64, error) {
 	const query = `INSERT INTO banner(description) VALUES(?)`
 
 	res, err := bg.db.ExecContext(ctx, query, b.Description)
@@ -160,7 +160,7 @@ func (bg *BannerGateway) Create(ctx context.Context, b model.Banner) (int64, err
 	return insertedID, nil
 }
 
-func (bg *BannerGateway) Update(ctx context.Context, b model.Banner) (int64, error) {
+func (bg *BannerGateway) UpdateBanner(ctx context.Context, b model.Banner) (int64, error) {
 	const query = `UPDATE banner SET description = ? WHERE id = ?`
 
 	res, err := bg.db.ExecContext(ctx, query, b.Description, b.ID)
@@ -176,7 +176,7 @@ func (bg *BannerGateway) Update(ctx context.Context, b model.Banner) (int64, err
 	return affected, nil
 }
 
-func (bg *BannerGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
+func (bg *BannerGateway) DeleteBannerByID(ctx context.Context, id int64) (int64, error) {
 	const query = `DELETE FROM banner WHERE id = ?`
 
 	res, err := bg.db.ExecContext(ctx, query, id)

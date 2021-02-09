@@ -24,14 +24,14 @@ type (
 	}
 
 	BannerGateway interface { //nolint:golint
-		FindByID(ctx context.Context, id int64) (model.Banner, error)
-		FindAll(ctx context.Context) ([]model.Banner, error)
+		FindBannerByID(ctx context.Context, id int64) (model.Banner, error)
+		FindAllBanners(ctx context.Context) ([]model.Banner, error)
 		FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error)
 		CreateBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
 		DeleteBannerSlotRelation(ctx context.Context, bannerID, slotID int64) (int64, error)
-		Create(ctx context.Context, banner model.Banner) (int64, error)
-		DeleteByID(ctx context.Context, id int64) (int64, error)
-		Update(ctx context.Context, banner model.Banner) (int64, error)
+		CreateBanner(ctx context.Context, banner model.Banner) (int64, error)
+		DeleteBannerByID(ctx context.Context, id int64) (int64, error)
+		UpdateBanner(ctx context.Context, banner model.Banner) (int64, error)
 	}
 
 	UseCase struct {
@@ -115,21 +115,21 @@ func (uc *UseCase) FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]
 }
 
 func (uc *UseCase) CreateBanner(ctx context.Context, banner model.Banner) (int64, error) {
-	return uc.bannerGateway.Create(ctx, banner)
+	return uc.bannerGateway.CreateBanner(ctx, banner)
 }
 
 func (uc *UseCase) UpdateBanner(ctx context.Context, banner model.Banner) (int64, error) {
-	return uc.bannerGateway.Update(ctx, banner)
+	return uc.bannerGateway.UpdateBanner(ctx, banner)
 }
 
 func (uc *UseCase) DeleteBannerByID(ctx context.Context, id int64) (int64, error) {
-	return uc.bannerGateway.DeleteByID(ctx, id)
+	return uc.bannerGateway.DeleteBannerByID(ctx, id)
 }
 
 func (uc *UseCase) FindBannerByID(ctx context.Context, id int64) (model.Banner, error) {
-	return uc.bannerGateway.FindByID(ctx, id)
+	return uc.bannerGateway.FindBannerByID(ctx, id)
 }
 
 func (uc *UseCase) FindAllBanners(ctx context.Context) ([]model.Banner, error) {
-	return uc.bannerGateway.FindAll(ctx)
+	return uc.bannerGateway.FindAllBanners(ctx)
 }

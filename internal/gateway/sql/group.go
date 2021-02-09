@@ -31,25 +31,23 @@ func NewGroupGateway(db *sqlx.DB) *GroupGateway {
 	}
 }
 
-func (gg *GroupGateway) FindByID(ctx context.Context, id int64) (model.Group, error) {
+func (gg *GroupGateway) FindGroupByID(ctx context.Context, id int64) (model.Group, error) {
 	const query = `SELECT * FROM social_group WHERE id = ?`
 
 	var g Group
 	err := gg.db.QueryRowxContext(ctx, query, id).StructScan(&g)
 	if err != nil {
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				return toGroup(g), fmt.Errorf("social group: %w", model.ErrNotFound)
-			}
-
-			return toGroup(g), fmt.Errorf("select social group: %w", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return toGroup(g), fmt.Errorf("social group: %w", model.ErrNotFound)
 		}
+
+		return toGroup(g), fmt.Errorf("select social group: %w", err)
 	}
 
 	return toGroup(g), nil
 }
 
-func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
+func (gg *GroupGateway) FindAllGroups(ctx context.Context) ([]model.Group, error) {
 	const query = `SELECT * FROM social_group`
 
 	rows, err := gg.db.QueryxContext(ctx, query)
@@ -80,7 +78,7 @@ func (gg *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
 	return toGroups(groups), nil
 }
 
-func (gg *GroupGateway) Create(ctx context.Context, g model.Group) (int64, error) {
+func (gg *GroupGateway) CreateGroup(ctx context.Context, g model.Group) (int64, error) {
 	const query = `INSERT INTO social_group(description) VALUES(?)`
 
 	res, err := gg.db.ExecContext(ctx, query, g.Description)
@@ -96,7 +94,7 @@ func (gg *GroupGateway) Create(ctx context.Context, g model.Group) (int64, error
 	return insertedID, nil
 }
 
-func (gg *GroupGateway) Update(ctx context.Context, g model.Group) (int64, error) {
+func (gg *GroupGateway) UpdateGroup(ctx context.Context, g model.Group) (int64, error) {
 	const query = `UPDATE social_group SET description = ? WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, g.Description, g.ID)
@@ -112,7 +110,7 @@ func (gg *GroupGateway) Update(ctx context.Context, g model.Group) (int64, error
 	return affected, nil
 }
 
-func (gg *GroupGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
+func (gg *GroupGateway) DeleteGroupByID(ctx context.Context, id int64) (int64, error) {
 	const query = `DELETE FROM social_group WHERE id = ?`
 
 	res, err := gg.db.ExecContext(ctx, query, id)

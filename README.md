@@ -1,3 +1,20 @@
+[![Build Status](https://travis-ci.com/sterligov/banner-rotator.svg?branch=master)](https://travis-ci.com/sterligov/banner-rotator)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sterligov/banner-rotator)](https://goreportcard.com/report/github.com/sterligov/banner-rotator)
+
+**Сборка бинарника:** make build
+
+**Запуск в докере:** make run
+
+**Остановка сервиса:** make down
+
+**Юнит тесты:** make test
+
+**Юнит тесты(100 подряд):** make long-test
+
+**Интеграционные тесты:** make integration-test
+
+**Линтер:** make lint
+
 # ТЗ на сервис "Ротация баннеров"
 
 ## Общее описание

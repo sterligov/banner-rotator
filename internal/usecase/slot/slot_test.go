@@ -27,7 +27,7 @@ func TestFindAllSlots(t *testing.T) {
 
 			ctx := context.Background()
 			slotGw.
-				On("FindAll", ctx).
+				On("FindAllSlots", ctx).
 				Return(tst.slots, tst.err).
 				Once()
 			defer slotGw.AssertExpectations(t)
@@ -58,7 +58,7 @@ func TestFindSlotByID(t *testing.T) {
 			var slotID int64 = 1
 			ctx := context.Background()
 			slotGw.
-				On("FindByID", ctx, slotID).
+				On("FindSlotByID", ctx, slotID).
 				Return(tst.slot, tst.err).
 				Once()
 			defer slotGw.AssertExpectations(t)
@@ -92,7 +92,7 @@ func TestCreateSlot(t *testing.T) {
 
 			ctx := context.Background()
 			slotGw.
-				On("Create", ctx, slot).
+				On("CreateSlot", ctx, slot).
 				Return(tst.insertedID, tst.err).
 				Once()
 			defer slotGw.AssertExpectations(t)
@@ -126,7 +126,7 @@ func TestUpdateSlot(t *testing.T) {
 
 			ctx := context.Background()
 			slotGw.
-				On("Update", ctx, slot).
+				On("UpdateSlot", ctx, slot).
 				Return(tst.affected, tst.err).
 				Once()
 			defer slotGw.AssertExpectations(t)
@@ -158,7 +158,7 @@ func TestDeleteSlotByID(t *testing.T) {
 
 			ctx := context.Background()
 			slotGw.
-				On("DeleteByID", ctx, slotID).
+				On("DeleteSlotByID", ctx, slotID).
 				Return(tst.affected, tst.err).
 				Once()
 			defer slotGw.AssertExpectations(t)

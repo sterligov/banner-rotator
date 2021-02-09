@@ -15,8 +15,8 @@ type GroupGateway struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, _a1
-func (_m *GroupGateway) Create(ctx context.Context, _a1 model.Group) (int64, error) {
+// CreateGroup provides a mock function with given fields: ctx, _a1
+func (_m *GroupGateway) CreateGroup(ctx context.Context, _a1 model.Group) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64
@@ -36,8 +36,8 @@ func (_m *GroupGateway) Create(ctx context.Context, _a1 model.Group) (int64, err
 	return r0, r1
 }
 
-// DeleteByID provides a mock function with given fields: ctx, id
-func (_m *GroupGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
+// DeleteGroupByID provides a mock function with given fields: ctx, id
+func (_m *GroupGateway) DeleteGroupByID(ctx context.Context, id int64) (int64, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 int64
@@ -57,8 +57,8 @@ func (_m *GroupGateway) DeleteByID(ctx context.Context, id int64) (int64, error)
 	return r0, r1
 }
 
-// FindAll provides a mock function with given fields: ctx
-func (_m *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
+// FindAllGroups provides a mock function with given fields: ctx
+func (_m *GroupGateway) FindAllGroups(ctx context.Context) ([]model.Group, error) {
 	ret := _m.Called(ctx)
 
 	var r0 []model.Group
@@ -80,8 +80,8 @@ func (_m *GroupGateway) FindAll(ctx context.Context) ([]model.Group, error) {
 	return r0, r1
 }
 
-// FindByID provides a mock function with given fields: ctx, id
-func (_m *GroupGateway) FindByID(ctx context.Context, id int64) (model.Group, error) {
+// FindGroupByID provides a mock function with given fields: ctx, id
+func (_m *GroupGateway) FindGroupByID(ctx context.Context, id int64) (model.Group, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 model.Group
@@ -101,8 +101,8 @@ func (_m *GroupGateway) FindByID(ctx context.Context, id int64) (model.Group, er
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, _a1
-func (_m *GroupGateway) Update(ctx context.Context, _a1 model.Group) (int64, error) {
+// UpdateGroup provides a mock function with given fields: ctx, _a1
+func (_m *GroupGateway) UpdateGroup(ctx context.Context, _a1 model.Group) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64

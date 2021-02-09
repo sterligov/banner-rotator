@@ -14,8 +14,8 @@ type BannerGateway struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, _a1
-func (_m *BannerGateway) Create(ctx context.Context, _a1 model.Banner) (int64, error) {
+// CreateBanner provides a mock function with given fields: ctx, _a1
+func (_m *BannerGateway) CreateBanner(ctx context.Context, _a1 model.Banner) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64
@@ -56,6 +56,27 @@ func (_m *BannerGateway) CreateBannerSlotRelation(ctx context.Context, bannerID 
 	return r0, r1
 }
 
+// DeleteBannerByID provides a mock function with given fields: ctx, id
+func (_m *BannerGateway) DeleteBannerByID(ctx context.Context, id int64) (int64, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(context.Context, int64) int64); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteBannerSlotRelation provides a mock function with given fields: ctx, bannerID, slotID
 func (_m *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID int64, slotID int64) (int64, error) {
 	ret := _m.Called(ctx, bannerID, slotID)
@@ -77,29 +98,8 @@ func (_m *BannerGateway) DeleteBannerSlotRelation(ctx context.Context, bannerID 
 	return r0, r1
 }
 
-// DeleteByID provides a mock function with given fields: ctx, id
-func (_m *BannerGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
-	ret := _m.Called(ctx, id)
-
-	var r0 int64
-	if rf, ok := ret.Get(0).(func(context.Context, int64) int64); ok {
-		r0 = rf(ctx, id)
-	} else {
-		r0 = ret.Get(0).(int64)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
-		r1 = rf(ctx, id)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// FindAll provides a mock function with given fields: ctx
-func (_m *BannerGateway) FindAll(ctx context.Context) ([]model.Banner, error) {
+// FindAllBanners provides a mock function with given fields: ctx
+func (_m *BannerGateway) FindAllBanners(ctx context.Context) ([]model.Banner, error) {
 	ret := _m.Called(ctx)
 
 	var r0 []model.Banner
@@ -144,8 +144,8 @@ func (_m *BannerGateway) FindAllBannersBySlotID(ctx context.Context, slotID int6
 	return r0, r1
 }
 
-// FindByID provides a mock function with given fields: ctx, id
-func (_m *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, error) {
+// FindBannerByID provides a mock function with given fields: ctx, id
+func (_m *BannerGateway) FindBannerByID(ctx context.Context, id int64) (model.Banner, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 model.Banner
@@ -165,8 +165,8 @@ func (_m *BannerGateway) FindByID(ctx context.Context, id int64) (model.Banner, 
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, _a1
-func (_m *BannerGateway) Update(ctx context.Context, _a1 model.Banner) (int64, error) {
+// UpdateBanner provides a mock function with given fields: ctx, _a1
+func (_m *BannerGateway) UpdateBanner(ctx context.Context, _a1 model.Banner) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64

@@ -14,8 +14,8 @@ type SlotGateway struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, _a1
-func (_m *SlotGateway) Create(ctx context.Context, _a1 model.Slot) (int64, error) {
+// CreateSlot provides a mock function with given fields: ctx, _a1
+func (_m *SlotGateway) CreateSlot(ctx context.Context, _a1 model.Slot) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64
@@ -35,8 +35,8 @@ func (_m *SlotGateway) Create(ctx context.Context, _a1 model.Slot) (int64, error
 	return r0, r1
 }
 
-// DeleteByID provides a mock function with given fields: ctx, id
-func (_m *SlotGateway) DeleteByID(ctx context.Context, id int64) (int64, error) {
+// DeleteSlotByID provides a mock function with given fields: ctx, id
+func (_m *SlotGateway) DeleteSlotByID(ctx context.Context, id int64) (int64, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 int64
@@ -56,8 +56,8 @@ func (_m *SlotGateway) DeleteByID(ctx context.Context, id int64) (int64, error) 
 	return r0, r1
 }
 
-// FindAll provides a mock function with given fields: ctx
-func (_m *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
+// FindAllSlots provides a mock function with given fields: ctx
+func (_m *SlotGateway) FindAllSlots(ctx context.Context) ([]model.Slot, error) {
 	ret := _m.Called(ctx)
 
 	var r0 []model.Slot
@@ -79,8 +79,8 @@ func (_m *SlotGateway) FindAll(ctx context.Context) ([]model.Slot, error) {
 	return r0, r1
 }
 
-// FindByID provides a mock function with given fields: ctx, id
-func (_m *SlotGateway) FindByID(ctx context.Context, id int64) (model.Slot, error) {
+// FindSlotByID provides a mock function with given fields: ctx, id
+func (_m *SlotGateway) FindSlotByID(ctx context.Context, id int64) (model.Slot, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 model.Slot
@@ -100,8 +100,8 @@ func (_m *SlotGateway) FindByID(ctx context.Context, id int64) (model.Slot, erro
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: ctx, _a1
-func (_m *SlotGateway) Update(ctx context.Context, _a1 model.Slot) (int64, error) {
+// UpdateSlot provides a mock function with given fields: ctx, _a1
+func (_m *SlotGateway) UpdateSlot(ctx context.Context, _a1 model.Slot) (int64, error) {
 	ret := _m.Called(ctx, _a1)
 
 	var r0 int64

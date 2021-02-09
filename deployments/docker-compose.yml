@@ -1,4 +1,4 @@
-version: "3"
+version: '3.5'
 
 services:
   rotator_db:
@@ -40,3 +40,7 @@ services:
     command: ["rotator_db:3306", "-t", "60", "--", "/go/bin/goose", "mysql", "${DB_USER}:${DB_PASSWORD}@tcp(rotator_db:3306)/${DB_NAME}?parseTime=true", "up"]
     depends_on:
       - rotator_db
+
+networks:
+  default:
+    name: rotator_net

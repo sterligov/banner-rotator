@@ -262,7 +262,7 @@ func TestSelectBanner(t *testing.T) {
 	})
 }
 
-func TestCreateBannerSlotRelation(t *testing.T) {
+func TestCreateBannerSlotRelation(t *testing.T) { //nolint:dupl
 	t.Run("ok", func(t *testing.T) {
 		bannerGw := &mocks.BannerGateway{}
 
@@ -308,7 +308,7 @@ func TestCreateBannerSlotRelation(t *testing.T) {
 	})
 }
 
-func TestDeleteBannerSlotRelation(t *testing.T) {
+func TestDeleteBannerSlotRelation(t *testing.T) { //nolint:dupl
 	t.Run("ok", func(t *testing.T) {
 		bannerGw := &mocks.BannerGateway{}
 

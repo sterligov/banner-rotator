@@ -1,10 +1,14 @@
-version: "3"
+version: '3.5'
 
 services:
   rotator_integration:
     build:
       context: ../
       dockerfile: ./build/integration-tests.Dockerfile
-#    command: ["rotator_db:3306", "-t", "60", "--", "go", "test", "-v", "./tests/integration/..."]
-    depends_on:
-      - rotator_migrations
+    networks:
+      - rotator_test_net
+
+networks:
+  rotator_test_net:
+    external:
+      name: rotator_net

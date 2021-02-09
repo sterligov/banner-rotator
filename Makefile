@@ -31,7 +31,7 @@ long-test:
 	go test -race -count=100 ./internal/...
 
 integration-test:
-	chmod +x ./scripts/integration_test.sh && ./scripts/integration_test.sh
+	  chmod +x ./scripts/integration-test.sh && ./scripts/integration-test.sh
 
 install-lint-deps:
 	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.30.0
@@ -46,10 +46,10 @@ mocks:
 	mockery --all --dir internal --output ./internal/mocks --case underscore
 
 docker-run:
-	cd deployments && docker-compose up -d --build
+	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml up -d --build --remove-orphans
 
-docker-stop:
-	cd deployments && docker-compose stop
+docker-down:
+	docker-compose --env-file deployments/.env -f deployments/docker-compose.yml down
 
 migrations:
 	goose -dir migrations mysql "${DB_USER}:${DB_PASSWORD}@tcp(${DB_HOST}:${DB_PORT})/${DB_NAME}?parseTime=true" up

@@ -23,7 +23,7 @@ type (
 		FindStatistic(ctx context.Context, slotID, groupID int64) ([]model.Statistic, error)
 	}
 
-	BannerGateway interface {
+	BannerGateway interface { //nolint:golint
 		FindByID(ctx context.Context, id int64) (model.Banner, error)
 		FindAll(ctx context.Context) ([]model.Banner, error)
 		FindAllBannersBySlotID(ctx context.Context, slotID int64) ([]model.Banner, error)

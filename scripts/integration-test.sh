@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
-cd deployments
-#docker-compose -f docker-compose.yml up -d
-sleep 5s #wait services like database
-docker-compose -f docker-compose.test.yml up --build
+docker-compose --env-file deployments/.env -f deployments/docker-compose.yml up -d --build
+sleep 15s
+docker-compose -f deployments/docker-compose.test.yml up --build
 EXIT_CODE=$?
-#docker-compose -f docker-compose.yml stop
-echo ${EXIT_CODE}
+
+docker-compose -f deployments/docker-compose.test.yml down --remove-orphans
+docker-compose --env-file deployments/.env -f deployments/docker-compose.yml down --remove-orphans
 exit ${EXIT_CODE}

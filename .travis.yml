@@ -21,7 +21,7 @@ jobs:
     - stage: "Tests"
       name: "Unit tests"
       install: go mod download
-      script: go test -race -count=100 ./...
+      script: go test -race -count 100 ./...
 
     - stage: "Tests"
       name: "Build"

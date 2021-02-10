@@ -6,10 +6,20 @@ go:
 os:
   - linux
 
-env: GO111MODULE=on
-
 stages:
   - name: Tests
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.27.4
+
+services:
+  - docker
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 
 jobs:
   include:
@@ -22,6 +32,11 @@ jobs:
       name: "Unit tests"
       install: go mod download
       script: go test -race -count 100 ./...
+
+    - stage: "Tests"
+      name: "Integration tests"
+      install: go mod download
+      script: make integration-test
 
     - stage: "Tests"
       name: "Build"

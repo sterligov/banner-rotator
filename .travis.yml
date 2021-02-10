@@ -26,4 +26,4 @@ jobs:
     - stage: "Tests"
       name: "Build"
       install: go mod download
-      script: go build -o rotator ./cmd
+      script: go build -v -o rotator ./cmd

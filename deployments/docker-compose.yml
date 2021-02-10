@@ -34,6 +34,7 @@ services:
       - rotator_nats
 
   rotator_migrations:
+    container_name: rotator_migrations
     build:
       context: ../
       dockerfile: ./build/migrations.Dockerfile

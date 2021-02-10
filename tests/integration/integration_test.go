@@ -3,7 +3,6 @@
 package integration
 
 import (
-	"fmt"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -51,12 +50,6 @@ func (s *Suite) SetupSuite() {
 }
 
 func (s *Suite) TearDownSuite() {
-	tables := []string{"statistic", "banner", "slot", "social_group", "banner_slot"}
-	for _, t := range tables {
-		_, err := s.db.Exec(fmt.Sprintf("DELETE FROM %s", t))
-		s.Require().NoError(err)
-	}
-
 	s.Require().NoError(s.db.Close())
 	s.Require().NoError(s.grpcConn.Close())
 	s.natsConn.Close()

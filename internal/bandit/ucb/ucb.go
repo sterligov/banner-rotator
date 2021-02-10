@@ -29,7 +29,7 @@ func (u *UCB) SelectBanner(stats []model.Statistic) int64 {
 	)
 
 	for _, s := range stats {
-		weight := float64(s.Clicks)/float64(s.Shows) + math.Sqrt(math.Log(2*float64(totalShows))/float64(s.Shows))
+		weight := float64(s.Clicks)/float64(s.Shows) + math.Sqrt(2*math.Log(float64(totalShows))/float64(s.Shows))
 		if weight > maxWeight {
 			maxWeight = weight
 			bannerID = s.BannerID

@@ -18,7 +18,7 @@ type (
 	}
 
 	StatisticGateway interface {
-		IncrementClicks(ctx context.Context, bannerID, slotID, groupID int64) error
+		IncrementClicks(ctx context.Context, bannerID, slotID, groupID int64) (int64, error)
 		IncrementShows(ctx context.Context, bannerID, slotID, groupID int64) error
 		FindStatistic(ctx context.Context, slotID, groupID int64) ([]model.Statistic, error)
 	}
@@ -65,11 +65,16 @@ func (uc *UseCase) DeleteBannerSlotRelation(ctx context.Context, bannerID, slotI
 }
 
 func (uc *UseCase) RegisterClick(ctx context.Context, bannerID, slotID, groupID int64) error {
-	if err := uc.statisticGateway.IncrementClicks(ctx, bannerID, slotID, groupID); err != nil {
+	affected, err := uc.statisticGateway.IncrementClicks(ctx, bannerID, slotID, groupID)
+	if err != nil {
 		return fmt.Errorf("register click: %w", err)
 	}
 
-	err := uc.eventGateway.Publish(model.Event{
+	if affected == 0 {
+		return model.ErrBannerSlotGroupRelNotFound
+	}
+
+	err = uc.eventGateway.Publish(model.Event{
 		Type:     model.EventClick,
 		SlotID:   slotID,
 		BannerID: bannerID,
@@ -87,6 +92,10 @@ func (uc *UseCase) SelectBanner(ctx context.Context, slotID, groupID int64) (int
 	stats, err := uc.statisticGateway.FindStatistic(ctx, slotID, groupID)
 	if err != nil {
 		return 0, fmt.Errorf("find statistic by slot: %w", err)
+	}
+
+	if len(stats) == 0 {
+		return 0, model.ErrEmptyStatistic
 	}
 
 	bannerID := uc.bandit.SelectBanner(stats)

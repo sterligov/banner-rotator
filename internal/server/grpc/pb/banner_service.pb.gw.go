@@ -1118,7 +1118,7 @@ var (
 
 	pattern_BannerService_RegisterClick_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"banners", "banner_id", "slots", "slot_id", "groups", "group_id", "click"}, ""))
 
-	pattern_BannerService_SelectBanner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"banners", "select", "group", "group_id", "slots", "slot_id"}, ""))
+	pattern_BannerService_SelectBanner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"banners", "select", "groups", "group_id", "slots", "slot_id"}, ""))
 )
 
 var (

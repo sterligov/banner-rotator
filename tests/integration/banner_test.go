@@ -10,6 +10,10 @@ import (
 	"errors"
 	"time"
 
+	"google.golang.org/grpc/codes"
+
+	"google.golang.org/grpc/status"
+
 	"github.com/nats-io/nats.go"
 	internalsql "github.com/sterligov/banner-rotator/internal/gateway/sql"
 	"github.com/sterligov/banner-rotator/internal/model"
@@ -86,6 +90,57 @@ func (s *Suite) TestSimulateUCBWork() {
 	for i := 1; i < len(slot.Banners); i++ {
 		s.Require().NotEqual(nDefaultShows, banners[slot.Banners[i].Id], "остальные баннеры тоже должны выбираться")
 		s.Require().True(mostShows >= 4*banners[slot.Banners[i].Id], "кол-во показов самого кликабельного баннера должно быть минимум в 4 раза больше")
+	}
+}
+
+func (s *Suite) TestSelectBanner_Errors() {
+	bannerService := pb.NewBannerServiceClient(s.grpcConn)
+	tests := []struct {
+		slotID  int64
+		groupID int64
+		code    codes.Code
+		name    string
+	}{
+		{1, 100500, codes.NotFound, "not existing group"},
+		{100500, 1, codes.NotFound, "not existing slot"},
+	}
+
+	for _, tst := range tests {
+		tst := tst
+		s.Run(tst.name, func() {
+			_, err := bannerService.SelectBanner(context.Background(), &pb.SelectBannerRequest{
+				SlotId:  tst.slotID,
+				GroupId: tst.groupID,
+			})
+			s.Require().Equal(tst.code, status.Code(err))
+		})
+	}
+}
+
+func (s *Suite) TestRegisterClick_Errors() {
+	bannerService := pb.NewBannerServiceClient(s.grpcConn)
+	tests := []struct {
+		bannerID int64
+		slotID   int64
+		groupID  int64
+		code     codes.Code
+		name     string
+	}{
+		{1, 1, 100500, codes.NotFound, "not existing group"},
+		{1, 100500, 1, codes.NotFound, "not existing slot"},
+		{1, 100500, 1, codes.NotFound, "not existing banner"},
+	}
+
+	for _, tst := range tests {
+		tst := tst
+		s.Run(tst.name, func() {
+			_, err := bannerService.RegisterClick(context.Background(), &pb.RegisterClickRequest{
+				BannerId: tst.bannerID,
+				SlotId:   tst.slotID,
+				GroupId:  tst.groupID,
+			})
+			s.Require().Equal(tst.code, status.Code(err))
+		})
 	}
 }
 

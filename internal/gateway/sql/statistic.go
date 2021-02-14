@@ -66,19 +66,24 @@ WHERE bs.banner_id = ? AND bs.slot_id = ? AND s.social_group_id = ?`
 	return nil
 }
 
-func (sg *StatisticGateway) IncrementClicks(ctx context.Context, bannerID, slotID, groupID int64) error {
+func (sg *StatisticGateway) IncrementClicks(ctx context.Context, bannerID, slotID, groupID int64) (int64, error) {
 	var query = `
 UPDATE statistic s
 JOIN banner_slot bs ON s.banner_slot_id = bs.id
 SET s.clicks = s.clicks + 1
 WHERE bs.banner_id = ? AND bs.slot_id = ? AND s.social_group_id = ?`
 
-	_, err := sg.db.ExecContext(ctx, query, bannerID, slotID, groupID)
+	res, err := sg.db.ExecContext(ctx, query, bannerID, slotID, groupID)
 	if err != nil {
-		return fmt.Errorf("increment clicks exec: %w", err)
+		return 0, fmt.Errorf("increment clicks exec: %w", err)
 	}
 
-	return nil
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return 0, fmt.Errorf("increment clicks rows affected: %w", err)
+	}
+
+	return affected, nil
 }
 
 func (sg *StatisticGateway) FindStatistic(ctx context.Context, slotID, groupID int64) ([]model.Statistic, error) {
@@ -89,10 +94,10 @@ SELECT bs.banner_id,
        s.clicks,
        s.shows
 FROM statistic s
-RIGHT JOIN banner_slot bs on bs.id = s.banner_slot_id
-WHERE bs.slot_id = ? AND (s.social_group_id = ? OR s.social_group_id IS NULL)`
+RIGHT JOIN banner_slot bs on bs.id = s.banner_slot_id AND s.social_group_id = ?
+WHERE bs.slot_id = ? AND EXISTS(SELECT 1 FROM social_group WHERE id = ?)`
 
-	rows, err := sg.db.QueryxContext(ctx, query, slotID, groupID)
+	rows, err := sg.db.QueryxContext(ctx, query, groupID, slotID, groupID)
 	if err != nil {
 		return nil, fmt.Errorf("fetch query statistic: %w", err)
 	}

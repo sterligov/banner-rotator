@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/sterligov/banner-rotator/internal/config"
 	"github.com/sterligov/banner-rotator/internal/logger"
@@ -54,6 +55,9 @@ func main() {
 	}
 	defer cleanup()
 
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT)
+
 	go func() {
 		if err := server.GRPC.Start(); err != nil {
 			zap.L().Warn("grpc server start failed", zap.Error(err))
@@ -66,13 +70,13 @@ func main() {
 		}
 	}()
 
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, syscall.SIGINT)
-
 	<-signals
 	signal.Stop(signals)
 
-	if err := server.HTTP.Stop(context.Background()); err != nil && !errors.Is(err, http.ErrServerClosed) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.HTTP.Stop(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		zap.L().Warn("http server stop failed", zap.Error(err))
 	}
 

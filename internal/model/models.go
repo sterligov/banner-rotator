@@ -10,7 +10,11 @@ const (
 	EventSelect
 )
 
-var ErrNotFound = fmt.Errorf("entity not found")
+var (
+	ErrNotFound                   = fmt.Errorf("entity not found")
+	ErrEmptyStatistic             = fmt.Errorf("empty statistic")
+	ErrBannerSlotGroupRelNotFound = fmt.Errorf("banner-slot-group relation not found")
+)
 
 type (
 	Banner struct {

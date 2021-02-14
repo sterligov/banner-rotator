@@ -3,6 +3,7 @@ package banner
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -15,9 +16,7 @@ import (
 
 func TestRegisterClick(t *testing.T) {
 	eventGw := &mocks.EventGateway{}
-	bannerGw := &mocks.BannerGateway{}
 	statisticGW := &mocks.StatisticGateway{}
-	bandit := &mocks.Bandit{}
 
 	var (
 		slotID   int64 = 1
@@ -28,7 +27,7 @@ func TestRegisterClick(t *testing.T) {
 	ctx := context.Background()
 	statisticGW.
 		On("IncrementClicks", ctx, bannerID, slotID, groupID).
-		Return(nil).
+		Return(int64(1), nil).
 		Once()
 	defer statisticGW.AssertExpectations(t)
 
@@ -40,40 +39,49 @@ func TestRegisterClick(t *testing.T) {
 	})).Return(nil).Once()
 	defer eventGw.AssertExpectations(t)
 
-	uc := NewUseCase(bannerGw, eventGw, statisticGW, bandit)
+	uc := NewUseCase(nil, eventGw, statisticGW, nil)
 	err := uc.RegisterClick(ctx, bannerID, slotID, groupID)
 	require.NoError(t, err)
 }
 
-func TestRegisterClick_StatisticGatewayError(t *testing.T) {
-	eventGw := &mocks.EventGateway{}
-	bannerGw := &mocks.BannerGateway{}
-	statisticGW := &mocks.StatisticGateway{}
-	bandit := &mocks.Bandit{}
-
+func TestRegisterClick_StatisticGateway(t *testing.T) {
 	var (
 		slotID   int64 = 1
 		groupID  int64 = 2
 		bannerID int64 = 0
 	)
 
-	ctx := context.Background()
-	statisticGW.
-		On("IncrementClicks", ctx, bannerID, slotID, groupID).
-		Return(fmt.Errorf("error")).
-		Once()
-	defer statisticGW.AssertExpectations(t)
+	tests := []struct {
+		affected int64
+		err      error
+		name     string
+	}{
+		{0, nil, "no affected rows"},
+		{0, fmt.Errorf("error"), "unexpected error"},
+	}
 
-	uc := NewUseCase(bannerGw, eventGw, statisticGW, bandit)
-	err := uc.RegisterClick(ctx, bannerID, slotID, groupID)
-	require.Error(t, err)
+	for _, tst := range tests {
+		tst := tst
+		t.Run(tst.name, func(t *testing.T) {
+			statisticGW := &mocks.StatisticGateway{}
+
+			ctx := context.Background()
+			statisticGW.
+				On("IncrementClicks", ctx, bannerID, slotID, groupID).
+				Return(int64(0), fmt.Errorf("error")).
+				Once()
+			defer statisticGW.AssertExpectations(t)
+
+			uc := NewUseCase(nil, nil, statisticGW, nil)
+			err := uc.RegisterClick(ctx, bannerID, slotID, groupID)
+			require.Error(t, err)
+		})
+	}
 }
 
 func TestRegisterClick_EventGatewayError(t *testing.T) {
 	eventGw := &mocks.EventGateway{}
-	bannerGw := &mocks.BannerGateway{}
 	statisticGW := &mocks.StatisticGateway{}
-	bandit := &mocks.Bandit{}
 
 	var (
 		slotID   int64 = 1
@@ -84,7 +92,7 @@ func TestRegisterClick_EventGatewayError(t *testing.T) {
 	ctx := context.Background()
 	statisticGW.
 		On("IncrementClicks", ctx, bannerID, slotID, groupID).
-		Return(nil).
+		Return(int64(1), nil).
 		Once()
 	defer statisticGW.AssertExpectations(t)
 
@@ -96,7 +104,7 @@ func TestRegisterClick_EventGatewayError(t *testing.T) {
 	})).Return(fmt.Errorf("error")).Once()
 	defer eventGw.AssertExpectations(t)
 
-	uc := NewUseCase(bannerGw, eventGw, statisticGW, bandit)
+	uc := NewUseCase(nil, eventGw, statisticGW, nil)
 	err := uc.RegisterClick(ctx, bannerID, slotID, groupID)
 	require.Error(t, err)
 }
@@ -160,6 +168,26 @@ func TestSelectBanner(t *testing.T) {
 	require.Equal(t, selectedBannerID, actualBannerID)
 }
 
+func TestSelectBanner_EmptyStatistic(t *testing.T) {
+	statisticGW := &mocks.StatisticGateway{}
+
+	var (
+		slotID  int64 = 1
+		groupID int64 = 1
+	)
+
+	statisticGW.
+		On("FindStatistic", mock.Anything, slotID, groupID).
+		Return(nil, nil).
+		Once()
+	defer statisticGW.AssertExpectations(t)
+
+	uc := NewUseCase(nil, nil, statisticGW, nil)
+	actualBannerID, err := uc.SelectBanner(context.Background(), slotID, groupID)
+	require.True(t, errors.Is(err, model.ErrEmptyStatistic))
+	require.Empty(t, actualBannerID)
+}
+
 func TestSelectBanner_IncrementShowsError(t *testing.T) {
 	stats := []model.Statistic{
 		{
@@ -171,7 +199,6 @@ func TestSelectBanner_IncrementShowsError(t *testing.T) {
 		},
 	}
 
-	eventGw := &mocks.EventGateway{}
 	bannerGw := &mocks.BannerGateway{}
 	statisticGW := &mocks.StatisticGateway{}
 	bandit := &mocks.Bandit{}
@@ -198,17 +225,14 @@ func TestSelectBanner_IncrementShowsError(t *testing.T) {
 	})).Return(selectedBannerID).Once()
 	defer bandit.AssertExpectations(t)
 
-	uc := NewUseCase(bannerGw, eventGw, statisticGW, bandit)
+	uc := NewUseCase(bannerGw, nil, statisticGW, bandit)
 	actualBannerID, err := uc.SelectBanner(context.Background(), slotID, groupID)
 	require.Error(t, err)
 	require.Empty(t, actualBannerID)
 }
 
 func TestSelectBanner_FindStatisticError(t *testing.T) {
-	eventGw := &mocks.EventGateway{}
-	bannerGw := &mocks.BannerGateway{}
 	statisticGW := &mocks.StatisticGateway{}
-	bandit := &mocks.Bandit{}
 
 	var (
 		slotID  int64 = 1
@@ -221,14 +245,22 @@ func TestSelectBanner_FindStatisticError(t *testing.T) {
 		Once()
 	defer statisticGW.AssertExpectations(t)
 
-	uc := NewUseCase(bannerGw, eventGw, statisticGW, bandit)
+	uc := NewUseCase(nil, nil, statisticGW, nil)
 	actualBannerID, err := uc.SelectBanner(context.Background(), slotID, groupID)
 	require.Error(t, err)
 	require.Empty(t, actualBannerID)
 }
 
 func TestSelectBanner_PublishEventError(t *testing.T) {
-	var stats []model.Statistic
+	stats := []model.Statistic{
+		{
+			BannerID: 1,
+			GroupID:  1,
+			SlotID:   1,
+			Clicks:   10,
+			Shows:    10,
+		},
+	}
 
 	eventGw := &mocks.EventGateway{}
 	bannerGw := &mocks.BannerGateway{}

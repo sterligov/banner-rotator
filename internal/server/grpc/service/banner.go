@@ -38,6 +38,10 @@ func NewBannerService(bannerUC BannerUseCase) *BannerService {
 func (bs *BannerService) RegisterClick(ctx context.Context, r *pb.RegisterClickRequest) (*pb.RegisterClickResponse, error) {
 	err := bs.bannerUC.RegisterClick(ctx, r.BannerId, r.SlotId, r.GroupId)
 	if err != nil {
+		if errors.Is(err, model.ErrBannerSlotGroupRelNotFound) {
+			return nil, status.Error(codes.NotFound, "banner-slot-group relation not found")
+		}
+
 		return nil, err
 	}
 
@@ -47,6 +51,10 @@ func (bs *BannerService) RegisterClick(ctx context.Context, r *pb.RegisterClickR
 func (bs *BannerService) SelectBanner(ctx context.Context, r *pb.SelectBannerRequest) (*pb.SelectBannerResponse, error) {
 	bannerID, err := bs.bannerUC.SelectBanner(ctx, r.SlotId, r.GroupId)
 	if err != nil {
+		if errors.Is(err, model.ErrEmptyStatistic) {
+			return nil, status.Error(codes.NotFound, "empty statistic")
+		}
+
 		return nil, err
 	}
 

@@ -22,13 +22,14 @@ import (
 // Injectors from wire.go:
 
 func setup(configConfig *config.Config) (*server.Server, func(), error) {
-	db, err := sql.NewDatabase(configConfig)
+	db, cleanup, err := sql.NewDatabase(configConfig)
 	if err != nil {
 		return nil, nil, err
 	}
 	bannerGateway := sql.NewBannerGateway(db)
-	natsNats, err := nats.NewNatsConnection(configConfig)
+	natsNats, cleanup2, err := nats.NewNatsConnection(configConfig)
 	if err != nil {
+		cleanup()
 		return nil, nil, err
 	}
 	eventGateway := nats.NewEventGateway(configConfig, natsNats)
@@ -46,13 +47,19 @@ func setup(configConfig *config.Config) (*server.Server, func(), error) {
 	grpcServer := grpc.NewServer(configConfig, bannerService, slotService, groupService, healthService)
 	handler, err := internalhttp.NewHandler(configConfig)
 	if err != nil {
+		cleanup2()
+		cleanup()
 		return nil, nil, err
 	}
 	internalhttpServer, err := internalhttp.NewServer(configConfig, handler)
 	if err != nil {
+		cleanup2()
+		cleanup()
 		return nil, nil, err
 	}
 	serverServer := server.NewServer(grpcServer, internalhttpServer)
 	return serverServer, func() {
+		cleanup2()
+		cleanup()
 	}, nil
 }

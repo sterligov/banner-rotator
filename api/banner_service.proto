@@ -149,7 +149,7 @@ service BannerService {
 
   rpc SelectBanner(SelectBannerRequest) returns (SelectBannerResponse) {
     option(google.api.http) = {
-      get: "/banners/select/group/{group_id}/slots/{slot_id}"
+      get: "/banners/select/groups/{group_id}/slots/{slot_id}"
     };
   }
 }

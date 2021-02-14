@@ -12,7 +12,7 @@ import (
 
 var ErrDatabaseConnection = fmt.Errorf("database connection failed")
 
-func NewDatabase(cfg *config.Config) (*sqlx.DB, error) {
+func NewDatabase(cfg *config.Config) (*sqlx.DB, func(), error) {
 	for i := 0; i < cfg.Database.MaxReconnectRetries; i++ {
 		db, err := sqlx.Connect(cfg.Database.Driver, cfg.Database.Addr)
 		if err != nil {
@@ -21,8 +21,12 @@ func NewDatabase(cfg *config.Config) (*sqlx.DB, error) {
 			continue
 		}
 
-		return db, nil
+		return db, func() {
+			if err := db.Close(); err != nil {
+				zap.L().Warn("close nats connection failed")
+			}
+		}, nil
 	}
 
-	return nil, ErrDatabaseConnection
+	return nil, nil, ErrDatabaseConnection
 }

@@ -1,7 +1,6 @@
 package nats
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"time"
@@ -16,17 +15,15 @@ var ErrMaxReconnectRetries = fmt.Errorf("max reconnect retries")
 type Nats struct {
 	conn                *nats.Conn
 	logger              *zap.Logger
-	ctx                 context.Context
 	connectTimeout      time.Duration
 	connectTimeWait     time.Duration
 	maxReconnectRetries int
 }
 
-func NewNatsConnection(cfg *config.Config) (*Nats, error) {
+func NewNatsConnection(cfg *config.Config) (*Nats, func(), error) {
 	logger := zap.L().Named("NATS")
 
 	n := &Nats{
-		ctx:                 context.Background(),
 		connectTimeout:      cfg.Nats.ConnectTimeout,
 		connectTimeWait:     cfg.Nats.ConnectTimeWait,
 		maxReconnectRetries: cfg.Nats.MaxReconnectRetries,
@@ -51,10 +48,10 @@ func NewNatsConnection(cfg *config.Config) (*Nats, error) {
 	var err error
 	n.conn, err = nats.Connect(cfg.Nats.URL, opts...)
 	if err != nil {
-		return nil, fmt.Errorf("nats connect: %w", err)
+		return nil, nil, fmt.Errorf("nats connect: %w", err)
 	}
 
-	return n, nil
+	return n, func() { n.conn.Close() }, nil
 }
 
 func (n *Nats) Dial(network, address string) (net.Conn, error) {
@@ -67,16 +64,13 @@ func (n *Nats) Dial(network, address string) (net.Conn, error) {
 			return nil, ErrMaxReconnectRetries
 		}
 
-		select {
-		case <-n.ctx.Done():
-			return nil, n.ctx.Err()
-		default:
-			d := &net.Dialer{}
-			if conn, err := d.DialContext(n.ctx, network, address); err == nil {
-				n.logger.Info("connecting successfully")
-				return conn, nil
-			}
-			time.Sleep(n.connectTimeWait)
+		d := &net.Dialer{}
+
+		if conn, err := d.Dial(network, address); err == nil {
+			n.logger.Info("connecting successfully")
+			return conn, nil
 		}
+
+		time.Sleep(n.connectTimeWait)
 	}
 }

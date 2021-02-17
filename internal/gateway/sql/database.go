@@ -21,6 +21,10 @@ func NewDatabase(cfg *config.Config) (*sqlx.DB, func(), error) {
 			continue
 		}
 
+		db.SetMaxOpenConns(cfg.Database.MaxOpenConns)
+		db.SetMaxIdleConns(cfg.Database.MaxIdleConns)
+		db.SetConnMaxLifetime(cfg.Database.MaxConnLifetime)
+
 		return db, func() {
 			if err := db.Close(); err != nil {
 				zap.L().Warn("close nats connection failed")

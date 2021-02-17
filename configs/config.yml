@@ -16,6 +16,9 @@ database:
   driver: mysql
   reconnect_time: 3s
   max_reconnect_retries: 20
+  max_open_conns: 20
+  max_idle_conns: 20
+  max_conn_lifetime: 5m
 
 nats:
   url: nats://rotator_nats:4222
